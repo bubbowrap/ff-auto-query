@@ -27,6 +27,16 @@ const state = {
       link: 'https://archiveofourown.com',
       id: 1598402920207,
     },
+    {
+      fandom: 'Marvel Cinematic Universe',
+      category: 'Movies',
+      title: 'Peter Parker/Michelle Jones',
+      description: 'Pairing of Max & Furiosa',
+      image: 'https://vuejs.org/images/logo.png',
+      favorited: true,
+      link: 'https://archiveofourown.com',
+      id: 1598402920208,
+    },
   ],
 }
 
@@ -54,14 +64,11 @@ const actions = {
         if (currentFandom !== fandom) {
           //push new fandom to category
           commit('SAVE_FANDOM', query)
-          console.log(state.categories)
         }
       })
     } else {
       // if category doesn't exist, make a new category and add fandom to it
       commit('SAVE_NEW_CATEGORY', query)
-      // state.categories[category] = [fandom]
-      // console.log(state.categories)
     }
   },
 }

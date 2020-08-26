@@ -1,0 +1,46 @@
+<template>
+  <div>
+    <h1>{{ fandomTitle }}</h1>
+    <cardList :fandom="fandomTitle" />
+  </div>
+</template>
+
+<script>
+import cardList from '@/components/CardList'
+
+export default {
+  props: ['category', 'fandom'],
+  data() {
+    return {
+      params: this.$route.params,
+    }
+  },
+  computed: {
+    fandomTitle() {
+      let fandomList = Object.keys(this.$store.getters.categories).flatMap(
+        category => this.$store.getters.categories[category]
+      )
+      //if fandom make path equals loop through fandomList make path
+      return fandomList.filter(f => this.fandom === this.makePath(f)).toString()
+    },
+  },
+  components: {
+    cardList,
+  },
+  methods: {
+    makePath(value) {
+      const regex = /\s/gi
+      return value.toLowerCase().replace(regex, '-')
+    },
+
+    // unmakePath(value) {
+    //   // const regex = /-/gi
+    //   return value
+    //     .split('-')
+    //     .map(v => v.charAt(0).toUpperCase())
+    //     .join(' ')
+    //   //return value.toLowerCase().replace(regex, ' ').
+    // },
+  },
+}
+</script>

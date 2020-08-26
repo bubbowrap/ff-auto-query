@@ -7,7 +7,13 @@
 
           <v-card-subtitle v-text="query.category"></v-card-subtitle>
           <v-card-text>
-            <v-btn outlined color="primary" :href="query.link">
+            <v-btn
+              outlined
+              color="primary"
+              :href="query.link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Read Now
               <v-icon>mdi-chevron-right</v-icon>
             </v-btn>
