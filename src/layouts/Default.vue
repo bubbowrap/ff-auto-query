@@ -46,6 +46,11 @@
             </v-list-item-content>
           </router-link>
         </v-list-group>
+        <v-list-item to="/About">
+          <v-list-item-content>
+            <v-list-item-title>About this App</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
