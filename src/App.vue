@@ -7,16 +7,14 @@
 </template>
 
 <script>
-
 export default {
-  name: "App",
+  name: 'App',
 
-  components: {
-  },
+  components: {},
   computed: {
     layout() {
       return 'Default'
-    }
-  }
-};
+    },
+  },
+}
 </script>

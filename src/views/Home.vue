@@ -1,9 +1,16 @@
 <template>
   <div>
     <h1>Favorites</h1>
+    <cardList />
   </div>
 </template>
 
 <script>
-export default {}
+import cardList from '@/components/CardList'
+
+export default {
+  components: {
+    cardList,
+  },
+}
 </script>
