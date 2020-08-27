@@ -12,13 +12,13 @@
         href="https://github.com/vuetifyjs/vuetify/releases/latest"
         target="_blank"
         text
-      >
+        ><v-icon left>mdi-account-circle</v-icon>
         Sign In
       </v-btn>
     </v-app-bar>
 
     <v-navigation-drawer floating v-model="drawer" app mobile-breakpoint="600">
-      <v-list>
+      <v-list class="pt-0">
         <v-list-item to="/">
           <v-list-item-content>
             <v-list-item-title>Favorites</v-list-item-title>
@@ -27,7 +27,7 @@
         <v-list-group
           v-for="(fandoms, category) in categories"
           :key="category"
-          color="red lighten-1"
+          color="none"
         >
           <template v-slot:activator>
             <v-list-item-content>
@@ -35,20 +35,19 @@
             </v-list-item-content>
           </template>
 
-          <router-link
+          <v-list-item
             v-for="fandom in fandoms"
             :key="fandom"
             :to="`/category/${makePath(category)}/${makePath(fandom)}`"
-            class="v-list-item v-list-item--link theme--dark"
           >
             <v-list-item-content>
               <v-list-item-title v-text="fandom"></v-list-item-title>
             </v-list-item-content>
-          </router-link>
+          </v-list-item>
         </v-list-group>
         <v-list-item to="/About">
           <v-list-item-content>
-            <v-list-item-title>About this App</v-list-item-title>
+            <v-list-item-title>About FFAQ</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -118,6 +117,7 @@
                             required
                             :rules="urlRules"
                             v-model="newQuery.link"
+                            @keydown.enter="saveQuery"
                           ></v-text-field>
                         </v-col>
                       </v-row>

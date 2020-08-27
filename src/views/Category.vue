@@ -1,7 +1,8 @@
 <template>
   <div>
+    <span class="text-overline">{{ categoryWord }}</span>
     <h1>{{ fandomTitle }}</h1>
-    <cardList :fandom="fandomTitle" />
+    <cardList :fandom="fandomTitle" :category="categoryWord" />
   </div>
 </template>
 
@@ -21,7 +22,18 @@ export default {
         category => this.$store.getters.categories[category]
       )
       //if fandom make path equals loop through fandomList make path
-      return fandomList.filter(f => this.fandom === this.makePath(f)).toString()
+      return fandomList.length
+        ? fandomList.filter(f => this.fandom === this.makePath(f))[0].toString()
+        : null
+    },
+    categoryWord() {
+      let categoryList = Object.keys(this.$store.getters.categories)
+
+      return categoryList.length
+        ? categoryList
+            .filter(cat => this.category === this.makePath(cat))[0]
+            .toString()
+        : null
     },
   },
   components: {

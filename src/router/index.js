@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Category from '../views/Category.vue'
 
 Vue.use(VueRouter)
 
@@ -13,8 +14,7 @@ const routes = [
   {
     path: '/category/:category/:fandom',
     name: 'Category',
-    component: () =>
-      import(/* webpackChunkName: "about" */ '@/views/Category.vue'),
+    component: Category,
     props: true,
   },
   {
