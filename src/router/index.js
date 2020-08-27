@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Category from '../views/Category.vue'
+import notFound from '../views/notFound.vue'
 
 Vue.use(VueRouter)
 
@@ -26,6 +27,12 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "about" */ '@/views/About.vue'),
   },
+  {
+    path: '/404',
+    name: '404',
+    component: notFound,
+  },
+  { path: '*', redirect: '/404' },
 ]
 
 const router = new VueRouter({

@@ -88,7 +88,7 @@
                             v-model="newQuery.category"
                           ></v-combobox>
                         </v-col>
-                        <v-col cols="6">
+                        <v-col cols="12" sm="6">
                           <v-text-field
                             label="Query Title*"
                             hint="enter a title for your query"
@@ -97,7 +97,7 @@
                             required
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="6">
+                        <v-col cols="12" sm="6">
                           <v-file-input
                             label="Query Image"
                             accept="image/*"

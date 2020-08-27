@@ -27,7 +27,7 @@ export default {
       //remove Fandom from array if empty
       if (this.ffQueries.length === 0) {
         this.$store.dispatch('removeFandom', [this.category, this.fandom])
-        this.$router.push('/')
+        this.$router.push('/404')
       }
       //remove category if empty
       for (let category in this.$store.getters.categories) {

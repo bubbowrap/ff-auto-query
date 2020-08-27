@@ -53,13 +53,15 @@
         </div>
       </v-expand-transition>
     </v-card>
-
+    <!-- this.$refs.form.reset() -->
     <!--Modal Form-->
-    <v-dialog v-model="dialog" max-width="600px" v-if="dialog">
+    <v-dialog v-model="dialog" max-width="600px" v-if="dialog" persistent>
       <v-form ref="editForm" :lazy-validation="lazy">
         <v-card>
           <v-card-title>
             <span class="headline">Edit Query</span>
+            <v-spacer></v-spacer>
+            <!-- <v-btn icon @click="closeForm"><v-icon>mdi-close</v-icon></v-btn> -->
           </v-card-title>
           <v-card-text>
             <v-container>
@@ -70,8 +72,9 @@
                     label="Fandom*"
                     required
                     :rules="inputRules"
-                    v-model="cardQuery.fandom"
-                    clearable
+                    :value="cardQuery.fandom"
+                    @keyup="cardQuery.fandom = $event.target.value"
+                    @keydown.enter="editQuery"
                   ></v-combobox>
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -80,8 +83,9 @@
                     label="Category*"
                     required
                     :rules="inputRules"
-                    v-model="cardQuery.category"
-                    clearable
+                    :value="cardQuery.category"
+                    @keyup="cardQuery.category = $event.target.value"
+                    @keydown.enter="editQuery"
                   ></v-combobox>
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -91,19 +95,27 @@
                     v-model="cardQuery.title"
                     :rules="inputRules"
                     required
+                    @keydown.enter="editQuery"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6">
                   <v-file-input
                     label="Query Image"
                     accept="image/*"
-                    v-model="cardQuery.image"
+                    :value="cardQuery.image"
+                    @input="
+                      cardQuery.image
+                        ? (cardQuery.image = $event.target.value)
+                        : (cardQuery.image = null)
+                    "
+                    @keydown.enter="editQuery"
                   ></v-file-input>
                 </v-col>
                 <v-col cols="12">
                   <v-text-field
                     label="Query Description"
                     v-model="cardQuery.description"
+                    @keydown.enter="editQuery"
                   ></v-text-field>
                 </v-col>
 
@@ -123,7 +135,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn block x-large color="primary" @click="editQuery"
-              >Save Query</v-btn
+              >Edit Query</v-btn
             >
           </v-card-actions>
         </v-card>
@@ -143,7 +155,7 @@ export default {
       show: false,
       dialog: false,
       lazy: true,
-      valid: false,
+      valid: true,
       inputRules: [
         v => !!v || 'Field is required',
         v => (v && v.length > 0) || 'Please enter more than 0 characters',
@@ -155,19 +167,29 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['editQuery', 'favQuery']),
+    ...mapActions(['favQuery']),
+
+    updateQuery(query, event) {
+      query = event.target.value
+    },
     removeQuery(value) {
       alert('Are you sure?')
       this.$store.dispatch('removeQuery', value)
     },
+
     openForm() {
       this.dialog = true
     },
+
+    // closeForm() {
+    //   this.dialog = false
+    //   this.$refs.editForm.resetValidation()
+    // },
+
     editQuery() {
       this.valid = this.$refs.editForm.validate()
       if (this.valid) {
         this.dialog = false
-
         this.$store.dispatch('editQuery', this.cardQuery)
       }
     },
