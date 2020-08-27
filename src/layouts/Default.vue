@@ -67,13 +67,15 @@
                   <v-card-title>
                     <span class="headline">Add New Query</span>
                   </v-card-title>
-                  <v-card-text>
-                    <v-container>
+                  <v-card-text class="pb-0">
+                    <v-container class="pb-0">
                       <v-row>
                         <v-col cols="12" sm="6">
                           <v-combobox
                             :items="allFandoms"
                             label="Fandom*"
+                            filled
+                            dense
                             required
                             :rules="inputRules"
                             v-model="newQuery.fandom"
@@ -83,6 +85,8 @@
                           <v-combobox
                             :items="Object.keys(this.categories)"
                             label="Category*"
+                            filled
+                            dense
                             required
                             :rules="inputRules"
                             v-model="newQuery.category"
@@ -91,22 +95,35 @@
                         <v-col cols="12" sm="6">
                           <v-text-field
                             label="Query Title*"
+                            filled
+                            dense
+                            required
                             hint="enter a title for your query"
                             v-model="newQuery.title"
                             :rules="inputRules"
-                            required
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6">
                           <v-file-input
                             label="Query Image"
-                            accept="image/*"
-                            v-model="newQuery.image"
+                            filled
+                            dense
+                            :rules="fileRules"
+                            prepend-icon="mdi-camera"
+                            accept="image/png, image/jpeg, image/bmp"
+                            :value="newQuery.image"
+                            @input="
+                              cardQuery.image
+                                ? (cardQuery.image = $event.target.value)
+                                : (cardQuery.image = null)
+                            "
                           ></v-file-input>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
                             label="Query Description"
+                            filled
+                            dense
                             v-model="newQuery.description"
                           ></v-text-field>
                         </v-col>
@@ -114,6 +131,8 @@
                         <v-col cols="12">
                           <v-text-field
                             label="Query Link*"
+                            filled
+                            dense
                             required
                             :rules="urlRules"
                             v-model="newQuery.link"
@@ -122,7 +141,6 @@
                         </v-col>
                       </v-row>
                     </v-container>
-                    <small>*indicates required field</small>
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
@@ -159,6 +177,12 @@ export default {
         link: '',
         id: Math.round(Date.now() + Math.random()),
       },
+      fileRules: [
+        value =>
+          !value ||
+          value.size < 2000000 ||
+          'Avatar size should be less than 2 MB!',
+      ],
       inputRules: [
         v => !!v || 'Field is required',
         v => (v && v.length > 0) || 'Please enter more than 0 characters',
@@ -177,11 +201,13 @@ export default {
     openForm() {
       this.dialog = true
     },
-    saveQuery() {
+    async saveQuery() {
       this.valid = this.$refs.queryForm.validate()
       if (this.valid) {
         this.dialog = false
-        this.$store.dispatch('saveQuery', this.newQuery)
+        await this.$store.dispatch('saveQuery', this.newQuery)
+        console.log(this.newQuery.image)
+        this.$refs.queryForm.resetValidation()
       }
       // {
       //   fandom: 'Bellow',

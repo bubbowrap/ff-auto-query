@@ -63,13 +63,15 @@
             <v-spacer></v-spacer>
             <!-- <v-btn icon @click="closeForm"><v-icon>mdi-close</v-icon></v-btn> -->
           </v-card-title>
-          <v-card-text>
-            <v-container>
+          <v-card-text class="pb-0">
+            <v-container class="pb-0">
               <v-row>
                 <v-col cols="12" sm="6">
                   <v-combobox
                     :items="allFandoms"
                     label="Fandom*"
+                    filled
+                    dense
                     required
                     :rules="inputRules"
                     v-model="cardQuery.fandom"
@@ -81,6 +83,8 @@
                   <v-combobox
                     :items="Object.keys(this.categories)"
                     label="Category*"
+                    filled
+                    dense
                     required
                     :rules="inputRules"
                     v-model="cardQuery.category"
@@ -91,17 +95,23 @@
                 <v-col cols="12" sm="6">
                   <v-text-field
                     label="Query Title*"
+                    filled
+                    dense
+                    required
                     hint="enter a title for your query"
                     v-model="cardQuery.title"
                     :rules="inputRules"
-                    required
                     @keydown.enter="editQuery"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6">
                   <v-file-input
                     label="Query Image"
-                    accept="image/*"
+                    filled
+                    dense
+                    :rules="fileRules"
+                    prepend-icon="mdi-camera"
+                    accept="image/png, image/jpeg, image/bmp"
                     :value="cardQuery.image"
                     @input="
                       cardQuery.image
@@ -114,6 +124,8 @@
                 <v-col cols="12">
                   <v-text-field
                     label="Query Description"
+                    filled
+                    dense
                     v-model="cardQuery.description"
                     @keydown.enter="editQuery"
                   ></v-text-field>
@@ -122,6 +134,8 @@
                 <v-col cols="12">
                   <v-text-field
                     label="Query Link*"
+                    filled
+                    dense
                     required
                     :rules="urlRules"
                     v-model="cardQuery.link"
@@ -130,10 +144,8 @@
                 </v-col>
               </v-row>
             </v-container>
-            <small>*indicates required field</small>
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
             <v-btn block x-large color="primary" @click="editQuery"
               >Edit Query</v-btn
             >
@@ -156,6 +168,12 @@ export default {
       dialog: false,
       lazy: true,
       valid: true,
+      fileRules: [
+        value =>
+          !value ||
+          value.size < 2000000 ||
+          'Avatar size should be less than 2 MB!',
+      ],
       inputRules: [
         v => !!v || 'Field is required',
         v => (v && v.length > 0) || 'Please enter more than 0 characters',
