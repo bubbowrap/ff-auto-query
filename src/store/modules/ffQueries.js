@@ -55,8 +55,12 @@ const mutations = {
   DELETE_CATEGORY(state, query) {
     Vue.delete(state.categories, query)
   },
-  FAV_QUERY(value) {
-    value.favorited = !value.favorited
+  FAV_QUERY(state, value) {
+    state.ffQueries.map(query => {
+      if(query.id === value.id) {
+        query.favorited = !query.favorited
+      }
+    })
   },
   EDIT_QUERY(state, value) {
     state.ffQueries = state.ffQueries.map(query =>
@@ -94,6 +98,7 @@ const actions = {
   },
 
   favQuery: ({ commit }, value) => {
+    value.favorited = !value.favorited
     commit('FAV_QUERY', value)
   },
 
