@@ -2,7 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Category from '../views/Category.vue'
-import notFound from '../views/notFound.vue'
+import notFound from '../views/NotFound.vue'
+import signIn from '../views/SignIn.vue'
 
 Vue.use(VueRouter)
 
@@ -31,6 +32,12 @@ const routes = [
     path: '/404',
     name: '404',
     component: notFound,
+  },
+  {
+    path: '/sign-in',
+    name: 'Sign In',
+    component: signIn,
+    meta: { layout: 'signIn' },
   },
   { path: '*', redirect: '/404' },
 ]

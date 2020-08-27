@@ -1,6 +1,6 @@
 <template>
   <v-col cols="12" md="6">
-    <v-card>
+    <v-card class="flex-grow-1">
       <div class="d-flex flex-no-wrap justify-space-between">
         <div>
           <v-card-title v-text="cardQuery.title"></v-card-title>
@@ -31,7 +31,7 @@
           ></v-btn
         >
         <v-btn icon @click="openForm"><v-icon>mdi-pencil</v-icon></v-btn>
-        <v-btn icon @click="removeQuery(cardQuery)"
+        <v-btn icon @click="deleteQuery(cardQuery)"
           ><v-icon>mdi-delete</v-icon></v-btn
         >
 
@@ -53,7 +53,7 @@
         </div>
       </v-expand-transition>
     </v-card>
-    <!-- this.$refs.form.reset() -->
+
     <!--Modal Form-->
     <v-dialog v-model="dialog" max-width="600px" v-if="dialog" persistent>
       <v-form ref="editForm" :lazy-validation="lazy">
@@ -72,7 +72,7 @@
                     label="Fandom*"
                     required
                     :rules="inputRules"
-                    :value="cardQuery.fandom"
+                    v-model="cardQuery.fandom"
                     @keyup="cardQuery.fandom = $event.target.value"
                     @keydown.enter="editQuery"
                   ></v-combobox>
@@ -83,7 +83,7 @@
                     label="Category*"
                     required
                     :rules="inputRules"
-                    :value="cardQuery.category"
+                    v-model="cardQuery.category"
                     @keyup="cardQuery.category = $event.target.value"
                     @keydown.enter="editQuery"
                   ></v-combobox>
@@ -172,9 +172,9 @@ export default {
     updateQuery(query, event) {
       query = event.target.value
     },
-    removeQuery(value) {
+    deleteQuery(value) {
       alert('Are you sure?')
-      this.$store.dispatch('removeQuery', value)
+      this.$store.dispatch('deleteQuery', value)
     },
 
     openForm() {
@@ -186,11 +186,11 @@ export default {
     //   this.$refs.editForm.resetValidation()
     // },
 
-    editQuery() {
+    async editQuery() {
       this.valid = this.$refs.editForm.validate()
       if (this.valid) {
         this.dialog = false
-        this.$store.dispatch('editQuery', this.cardQuery)
+        await this.$store.dispatch('editQuery', this.cardQuery)
       }
     },
   },

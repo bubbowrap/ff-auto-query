@@ -1,6 +1,11 @@
 <template>
   <v-row v-if="ffQueries.length">
-    <Card v-for="query in ffQueries" :query="query" :key="query.id" />
+    <Card
+      v-for="query in ffQueries"
+      :query="query"
+      :key="query.id"
+      @checkQueries="checkQueries()"
+    />
   </v-row>
   <v-row v-else>
     <v-col>
@@ -20,13 +25,21 @@ export default {
   components: {
     Card,
   },
-  methods: {},
 
   watch: {
+    navCategories() {
+      this.checkFandoms()
+    },
     ffQueries() {
+      this.checkFandoms()
+    },
+  },
+
+  methods: {
+    checkFandoms() {
       //remove Fandom from array if empty
       if (this.ffQueries.length === 0) {
-        this.$store.dispatch('removeFandom', [this.category, this.fandom])
+        this.$store.dispatch('deleteFandom', [this.category, this.fandom])
         this.$router.push('/404')
       }
       //remove category if empty
@@ -37,7 +50,11 @@ export default {
       }
     },
   },
+
   computed: {
+    navCategories() {
+      return this.$store.getters.categories
+    },
     ffQueries() {
       if (this.favoriteQueries) {
         return this.$store.getters.ffQueries.filter(

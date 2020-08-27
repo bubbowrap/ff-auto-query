@@ -21,15 +21,15 @@ export default {
       let fandomList = Object.keys(this.$store.getters.categories).flatMap(
         category => this.$store.getters.categories[category]
       )
-      //if fandom make path equals loop through fandomList make path
-      return fandomList.length
+      //if fandom make path equals loop through fandomList, make path
+      return fandomList.length && typeof fandomList !== 'undefined'
         ? fandomList.filter(f => this.fandom === this.makePath(f))[0].toString()
         : null
     },
     categoryWord() {
       let categoryList = Object.keys(this.$store.getters.categories)
 
-      return categoryList.length
+      return categoryList.length && typeof categoryList !== 'undefined'
         ? categoryList
             .filter(cat => this.category === this.makePath(cat))[0]
             .toString()

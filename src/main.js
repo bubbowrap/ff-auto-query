@@ -4,8 +4,11 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import Default from '@/layouts/Default.vue'
+import signIn from '@/layouts/SignIn.vue'
 
 Vue.component('Default', Default)
+Vue.component('signIn', signIn)
+
 Vue.config.productionTip = false
 
 new Vue({

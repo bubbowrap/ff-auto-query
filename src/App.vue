@@ -13,7 +13,8 @@ export default {
   components: {},
   computed: {
     layout() {
-      return 'Default'
+      console.log(this.$route.meta.layout)
+      return this.$route.meta.layout || 'Default'
     },
   },
 }

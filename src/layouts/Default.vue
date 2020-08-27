@@ -8,11 +8,11 @@
         >
       </div>
       <v-spacer></v-spacer>
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-        ><v-icon left>mdi-account-circle</v-icon>
+      <v-btn v-if="loggedIn"
+        ><v-icon left>mdi-account-circle</v-icon> Sign Out</v-btn
+      >
+      <v-btn text v-else to="/sign-in">
+        <v-icon left>mdi-account-circle</v-icon>
         Sign In
       </v-btn>
     </v-app-bar>
@@ -144,6 +144,7 @@
 export default {
   data() {
     return {
+      loggedIn: false,
       drawer: true,
       dialog: false,
       lazy: false,

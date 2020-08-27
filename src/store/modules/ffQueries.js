@@ -48,32 +48,37 @@ const mutations = {
     state.categories[query.category].push(query.fandom)
     state.categories[query.category].sort()
   },
+
   SAVE_NEW_CATEGORY(state, query) {
     Vue.set(state.categories, query.category)
     state.categories[query.category] = [query.fandom]
   },
+
   DELETE_CATEGORY(state, query) {
     Vue.delete(state.categories, query)
   },
+
+  DELETE_FANDOM(state, value) {
+    const i = state.categories[value[0]].indexOf(value[1])
+    if (i > -1) state.categories[value[0]].splice(i, 1)
+  },
+
+  DELETE_QUERY(state, value) {
+    state.ffQueries = state.ffQueries.filter(query => query.id !== value.id)
+  },
+
   FAV_QUERY(state, value) {
     state.ffQueries.map(query => {
-      if(query.id === value.id) {
+      if (query.id === value.id) {
         query.favorited = !query.favorited
       }
     })
   },
+
   EDIT_QUERY(state, value) {
     state.ffQueries = state.ffQueries.map(query =>
       query.id === value.id ? value : query
     )
-  },
-  REMOVE_FANDOM(state, value) {
-    console.log(value[0])
-    const i = state.categories[value[0]].indexOf(value[1])
-    if (i > -1) state.categories[value[0]].splice(i, 1)
-  },
-  REMOVE_QUERY(state, value) {
-    state.ffQueries = state.ffQueries.filter(query => query.id !== value.id)
   },
 }
 
@@ -104,7 +109,6 @@ const actions = {
 
   editQuery: ({ commit }, value) => {
     commit('EDIT_QUERY', value)
-    console.log(state.categories)
 
     const { category, fandom } = value
     if (Object.prototype.hasOwnProperty.call(state.categories, category)) {
@@ -123,14 +127,17 @@ const actions = {
       }
     }
   },
+
   deleteCategory: ({ commit }, value) => {
     commit('DELETE_CATEGORY', value)
   },
-  removeQuery: ({ commit }, value) => {
-    commit('REMOVE_QUERY', value)
+
+  deleteQuery: ({ commit }, value) => {
+    commit('DELETE_QUERY', value)
   },
-  removeFandom: ({ commit }, value) => {
-    commit('REMOVE_FANDOM', value)
+
+  deleteFandom: ({ commit }, value) => {
+    commit('DELETE_FANDOM', value)
   },
 }
 
