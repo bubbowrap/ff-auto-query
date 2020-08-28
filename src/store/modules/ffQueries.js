@@ -1,4 +1,7 @@
 import Vue from 'vue'
+import * as firebase from 'firebase/app'
+import 'firebase/database'
+import 'firebase/storage'
 
 const state = {
   categories: {
@@ -84,6 +87,18 @@ const mutations = {
 
 const actions = {
   saveQuery: ({ commit }, query) => {
+    //upload image and get url
+    if (query.image !== null && query.image.name) {
+      const storageRef = firebase
+        .storage()
+        .ref(`${query.image.name}`)
+        .put(query.image)
+      storageRef.on(`state_changed`, () => {
+        storageRef.snapshot.ref.getDownloadURL().then(url => {
+          query.image = url
+        })
+      })
+    }
     commit('SAVE_QUERY', query)
     const { category, fandom } = query
     //if the category object has the category
@@ -107,19 +122,31 @@ const actions = {
     commit('FAV_QUERY', value)
   },
 
-  editQuery: ({ commit }, value) => {
-    commit('EDIT_QUERY', value)
+  editQuery: ({ commit }, query) => {
+    // upload if a file
+    if (query.image !== null && query.image.name) {
+      const storageRef = firebase
+        .storage()
+        .ref(`${query.image.name}`)
+        .put(query.image)
+      storageRef.on(`state_changed`, () => {
+        storageRef.snapshot.ref.getDownloadURL().then(url => {
+          query.image = url
+        })
+      })
+    }
+    commit('EDIT_QUERY', query)
 
-    const { category, fandom } = value
+    const { category, fandom } = query
     if (Object.prototype.hasOwnProperty.call(state.categories, category)) {
       if (state.categories[category].includes(fandom)) {
         return
       } else {
-        commit('SAVE_FANDOM', value)
+        commit('SAVE_FANDOM', query)
       }
     } else {
       // if category doesn't exist, make a new category and add fandom to it
-      commit('SAVE_NEW_CATEGORY', value)
+      commit('SAVE_NEW_CATEGORY', query)
     }
     for (const query in state.ffQueries) {
       if (query.length === 0) {

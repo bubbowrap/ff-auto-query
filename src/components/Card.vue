@@ -21,7 +21,9 @@
         </div>
 
         <v-avatar class="ma-3" size="125" tile v-if="cardQuery.image">
-          <v-img :src="cardQuery.image"></v-img>
+          <v-img
+            :src="`${typeof cardQuery.image === String ? '' : cardQuery.image}`"
+          ></v-img>
         </v-avatar>
       </div>
       <v-card-actions>
@@ -104,22 +106,23 @@
                     @keydown.enter="editQuery"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6">
-                  <v-file-input
-                    label="Query Image"
-                    filled
-                    dense
-                    :rules="fileRules"
-                    prepend-icon="mdi-camera"
-                    accept="image/png, image/jpeg, image/bmp"
-                    :value="cardQuery.image"
-                    @input="
-                      cardQuery.image
-                        ? (cardQuery.image = $event.target.value)
-                        : (cardQuery.image = null)
-                    "
-                    @keydown.enter="editQuery"
-                  ></v-file-input>
+                <v-col cols="12" sm="6" class="d-flex">
+                  <v-btn
+                    @click="$refs.fileInput.click()"
+                    outlined
+                    x-large
+                    class="flex-grow-1 uploadBtn"
+                    color="primary"
+                    style="max-width: 100%"
+                    >{{ imageUploadText }}</v-btn
+                  >
+                  <input
+                    type="file"
+                    ref="fileInput"
+                    style="display: none"
+                    @change="updateImage"
+                    accept="image/*"
+                  />
                 </v-col>
                 <v-col cols="12">
                   <v-text-field
@@ -161,19 +164,16 @@ import { mapActions } from 'vuex'
 
 export default {
   props: ['query'],
+
   data() {
     return {
       cardQuery: { ...this.query },
       show: false,
       dialog: false,
       lazy: true,
+      tempImage: null,
       valid: true,
-      fileRules: [
-        value =>
-          !value ||
-          value.size < 2000000 ||
-          'Avatar size should be less than 2 MB!',
-      ],
+      imageUploadText: this.query.image ? this.query.image : 'Upload Image',
       inputRules: [
         v => !!v || 'Field is required',
         v => (v && v.length > 0) || 'Please enter more than 0 characters',
@@ -181,15 +181,16 @@ export default {
       urlRules: [
         v => !!v || 'URL is required',
         v => (v && v.length > 0) || 'Please enter more than 0 characters',
+        v =>
+          /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)?/gi.test(
+            v
+          ) || 'URL must be valid and contain http:// or https://',
       ],
     }
   },
   methods: {
     ...mapActions(['favQuery']),
 
-    updateQuery(query, event) {
-      query = event.target.value
-    },
     deleteQuery(value) {
       alert('Are you sure?')
       this.$store.dispatch('deleteQuery', value)
@@ -199,16 +200,21 @@ export default {
       this.dialog = true
     },
 
+    updateImage() {
+      this.tempImage = event.target.files[0]
+      this.imageUploadText = event.target.files[0].name
+    },
     // closeForm() {
     //   this.dialog = false
     //   this.$refs.editForm.resetValidation()
     // },
 
-    async editQuery() {
+    editQuery() {
       this.valid = this.$refs.editForm.validate()
       if (this.valid) {
         this.dialog = false
-        await this.$store.dispatch('editQuery', this.cardQuery)
+        if (this.tempImage !== null) this.cardQuery.image = this.tempImage
+        this.$store.dispatch('editQuery', this.cardQuery)
       }
     },
   },
@@ -225,4 +231,15 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.uploadBtn {
+  justify-content: start;
+  direction: rtl;
+  .v-btn__content {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+}
+</style>

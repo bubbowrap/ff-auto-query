@@ -77,6 +77,7 @@
                             filled
                             dense
                             required
+                            autofocus
                             :rules="inputRules"
                             v-model="newQuery.fandom"
                           ></v-combobox>
@@ -103,21 +104,22 @@
                             :rules="inputRules"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="6">
-                          <v-file-input
-                            label="Query Image"
-                            filled
-                            dense
-                            :rules="fileRules"
-                            prepend-icon="mdi-camera"
-                            accept="image/png, image/jpeg, image/bmp"
-                            :value="newQuery.image"
-                            @input="
-                              cardQuery.image
-                                ? (cardQuery.image = $event.target.value)
-                                : (cardQuery.image = null)
-                            "
-                          ></v-file-input>
+                        <v-col cols="12" sm="6" class="d-flex">
+                          <v-btn
+                            @click="$refs.fileInput.click()"
+                            outlined
+                            x-large
+                            class="flex-grow-1"
+                            color="primary"
+                            >{{ imageUploadText }}</v-btn
+                          >
+                          <input
+                            type="file"
+                            ref="fileInput"
+                            style="display: none"
+                            @change="uploadImage"
+                            accept="image/*"
+                          />
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
@@ -167,6 +169,7 @@ export default {
       dialog: false,
       lazy: false,
       valid: false,
+      imageUploadText: 'Upload image',
       newQuery: {
         fandom: '',
         category: '',
@@ -177,12 +180,6 @@ export default {
         link: '',
         id: Math.round(Date.now() + Math.random()),
       },
-      fileRules: [
-        value =>
-          !value ||
-          value.size < 2000000 ||
-          'Avatar size should be less than 2 MB!',
-      ],
       inputRules: [
         v => !!v || 'Field is required',
         v => (v && v.length > 0) || 'Please enter more than 0 characters',
@@ -190,6 +187,10 @@ export default {
       urlRules: [
         v => !!v || 'URL is required',
         v => (v && v.length > 0) || 'Please enter more than 0 characters',
+        v =>
+          /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)?/gi.test(
+            v
+          ) || 'URL must be valid and contain http:// or https://',
       ],
     }
   },
@@ -201,26 +202,36 @@ export default {
     openForm() {
       this.dialog = true
     },
-    async saveQuery() {
+
+    uploadImage() {
+      this.newQuery.image = event.target.files[0]
+      this.imageUploadText = event.target.files[0].name
+    },
+
+    saveQuery() {
       this.valid = this.$refs.queryForm.validate()
       if (this.valid) {
         this.dialog = false
-        await this.$store.dispatch('saveQuery', this.newQuery)
-        console.log(this.newQuery.image)
+        this.$store.dispatch('saveQuery', this.newQuery)
         this.$refs.queryForm.resetValidation()
+        this.resetQuery()
       }
-      // {
-      //   fandom: 'Bellow',
-      //   category: 'TV Shows',
-      //   title: 'Peter/MJ',
-      //   description: 'Pairing of Max & Furiosa',
-      //   image: 'https://vuejs.org/images/logo.png',
-      //   favorited: true,
-      //   link: 'https://archiveofourown.com',
-      //   id: Math.round(Date.now() + Math.random()),
-      // })
+    },
+
+    resetQuery() {
+      this.newQuery = {
+        fandom: '',
+        category: '',
+        title: '',
+        description: '',
+        image: null,
+        favorited: false,
+        link: '',
+        id: Math.round(Date.now() + Math.random()),
+      }
     },
   },
+
   computed: {
     categories() {
       return this.$store.getters.categories
