@@ -1,28 +1,9 @@
-import Vue from 'vue'
-import App from './App.vue'
-import * as firebase from 'firebase/app';
+import * as firebase from 'firebase/app'
 import 'firebase/database'
 import 'firebase/storage'
 
-import router from './router'
-import store from './store'
-import vuetify from './plugins/vuetify'
-import Default from '@/layouts/Default.vue'
-import SignIn from '@/layouts/SignIn.vue'
-
-Vue.component('Default', Default)
-Vue.component('signIn', SignIn)
-
-Vue.config.productionTip = false
-
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App),
-
+export default {
   created() {
-    // Firebase configuration
     var firebaseConfig = {
       apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
       authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
@@ -34,4 +15,4 @@ new Vue({
     }
     firebase.initializeApp(firebaseConfig)
   },
-}).$mount('#app')
+}
