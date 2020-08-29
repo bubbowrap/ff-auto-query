@@ -3,8 +3,10 @@
     <v-app-bar app dense flat dark>
       <div class="d-flex align-center">
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-toolbar-title class="ml-2" link to="/"
-          >Fanfic Auto Query</v-toolbar-title
+        <v-toolbar-title class="ml-2"
+          ><a href="/" class="v-toolbar-logo"
+            >Fanfic Auto Query</a
+          ></v-toolbar-title
         >
       </div>
       <v-spacer></v-spacer>
@@ -21,7 +23,7 @@
       <v-list class="pt-0">
         <v-list-item to="/">
           <v-list-item-content>
-            <v-list-item-title>Favorites</v-list-item-title>
+            <v-list-item-title>Home/Favorites</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-group
@@ -66,6 +68,10 @@
                 <v-card>
                   <v-card-title>
                     <span class="headline">Add New Query</span>
+                    <v-spacer></v-spacer>
+                    <v-btn icon @click="closeForm"
+                      ><v-icon>mdi-close</v-icon></v-btn
+                    >
                   </v-card-title>
                   <v-card-text class="pb-0">
                     <v-container class="pb-0">
@@ -104,7 +110,11 @@
                             :rules="inputRules"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="6" class="d-flex">
+                        <v-col
+                          cols="12"
+                          sm="6"
+                          class="d-flex pt-3 pb-9 pa-md-3"
+                        >
                           <v-btn
                             @click="$refs.fileInput.click()"
                             outlined
@@ -202,6 +212,10 @@ export default {
       this.dialog = true
     },
 
+    closeForm() {
+      this.dialog = false
+    },
+
     uploadImage() {
       this.newQuery.image = event.target.files[0]
       this.imageUploadText = event.target.files[0].name
@@ -245,12 +259,15 @@ export default {
 </script>
 
 <style lang="scss">
-.template--default,
-.v-main {
-  //height: 100%;
-  //min-height: 100vh;
-}
+.v-toolbar__title {
+  .v-toolbar-logo {
+    color: white;
+    text-decoration: none;
 
+    &:hover {
+    }
+  }
+}
 .v-btn--bottom {
   bottom: 0;
 }

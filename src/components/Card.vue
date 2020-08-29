@@ -56,6 +56,8 @@
       </v-expand-transition>
     </v-card>
 
+    <!--Delete Form -->
+    
     <!--Modal Form-->
     <v-dialog v-model="dialog" max-width="600px" v-if="dialog" persistent>
       <v-form ref="editForm" :lazy-validation="lazy">
@@ -106,7 +108,7 @@
                     @keydown.enter="editQuery"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6" class="d-flex">
+                <v-col cols="12" sm="6" class="d-flex pt-3 pb-9 pa-md-3">
                   <v-btn
                     @click="$refs.fileInput.click()"
                     outlined

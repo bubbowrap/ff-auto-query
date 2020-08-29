@@ -11,7 +11,7 @@
           <v-row>
             <v-card-text>
               <v-col cols="12" class="pa-2"
-                ><v-btn x-large color="primary"
+                ><v-btn x-large color="primary" @click="googleLogin"
                   ><v-icon left>mdi-google</v-icon> Sign in with Google</v-btn
                 ></v-col
               >
@@ -25,6 +25,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   data() {
     return {
@@ -33,6 +35,9 @@ export default {
         password: '',
       },
     }
+  },
+  methods: {
+    ...mapActions(['googleLogin']),
   },
 }
 </script>
