@@ -126,22 +126,21 @@
                 </v-col>
                 <v-col cols="12">
                   <v-text-field
-                    label="Query Description"
-                    filled
-                    dense
-                    v-model="cardQuery.description"
-                    @keydown.enter="editQuery"
-                  ></v-text-field>
-                </v-col>
-
-                <v-col cols="12">
-                  <v-text-field
                     label="Query Link*"
                     filled
                     dense
                     required
                     :rules="urlRules"
                     v-model="cardQuery.link"
+                    @keydown.enter="editQuery"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field
+                    label="Query Description"
+                    filled
+                    dense
+                    v-model="cardQuery.description"
                     @keydown.enter="editQuery"
                   ></v-text-field>
                 </v-col>

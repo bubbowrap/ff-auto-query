@@ -6,7 +6,10 @@
   >
     <v-container class="d-flex">
       <v-row class="align-self-center" justify="center">
-        <v-col cols="12 text-center"><h1>FanFiction Auto Query</h1></v-col>
+        <v-col cols="12 text-center"
+          ><h1>FanFiction Auto Query</h1>
+          <span>Save your favorite filters.</span>
+        </v-col>
         <router-view></router-view>
       </v-row>
     </v-container>

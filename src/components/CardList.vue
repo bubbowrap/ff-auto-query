@@ -21,7 +21,7 @@
 import Card from './Card'
 
 export default {
-  props: ['favoriteQueries', 'fandom', 'category'],
+  props: ['favoritedQueries', 'fandom', 'category'],
   components: {
     Card,
   },
@@ -56,7 +56,7 @@ export default {
       return this.$store.getters.categories
     },
     ffQueries() {
-      if (this.favoriteQueries) {
+      if (this.favoritedQueries) {
         return this.$store.getters.ffQueries.filter(
           query => query.favorited === true
         )
