@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
-import * as firebase from 'firebase/app'
+import * as firebase from 'firebase/app';
 import 'firebase/database'
 import 'firebase/storage'
 
@@ -8,10 +8,10 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import Default from '@/layouts/Default.vue'
-import signIn from '@/layouts/SignIn.vue'
+import SignIn from '@/layouts/SignIn.vue'
 
 Vue.component('Default', Default)
-Vue.component('signIn', signIn)
+Vue.component('signIn', SignIn)
 
 Vue.config.productionTip = false
 

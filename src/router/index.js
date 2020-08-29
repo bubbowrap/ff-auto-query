@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Category from '../views/Category.vue'
 import notFound from '../views/NotFound.vue'
-import signIn from '../views/SignIn.vue'
+import signIn from '../views/GoogleSignIn.vue'
 
 Vue.use(VueRouter)
 

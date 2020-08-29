@@ -187,8 +187,7 @@ export default {
       urlRules: [
         v => !!v || 'URL is required',
         v => (v && v.length > 0) || 'Please enter more than 0 characters',
-        v =>
-          /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)?/gi.test(
+        v => /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)?/gi.test(
             v
           ) || 'URL must be valid and contain http:// or https://',
       ],

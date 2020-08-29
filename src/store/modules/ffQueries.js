@@ -123,7 +123,7 @@ const actions = {
   },
 
   editQuery: ({ commit }, query) => {
-    // upload if a file
+    //upload image and get url
     if (query.image !== null && query.image.name) {
       const storageRef = firebase
         .storage()

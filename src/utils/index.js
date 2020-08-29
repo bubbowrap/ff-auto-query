@@ -1,17 +1,19 @@
 import axios from 'axios'
 
-const api = axios.create({
-  baseURL: 'http://localhost:8080',
+const firebaseApi = axios.create({
+  baseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
   headers: {
     'Content-type': 'application/json',
   },
 })
 
-const storageApi = axios.create({
-  baseURL: 'http://localhost:8080',
+const userApi = axios.create({
+  baseURL: 'https://identitytoolkit.googleapis.com/v1/accounts',
   headers: {
     'Content-type': 'application/json',
   },
 })
 
-export { api }
+https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
+
+export { userApi, firebaseApi }

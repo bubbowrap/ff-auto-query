@@ -204,10 +204,6 @@ export default {
       this.tempImage = event.target.files[0]
       this.imageUploadText = event.target.files[0].name
     },
-    // closeForm() {
-    //   this.dialog = false
-    //   this.$refs.editForm.resetValidation()
-    // },
 
     editQuery() {
       this.valid = this.$refs.editForm.validate()
