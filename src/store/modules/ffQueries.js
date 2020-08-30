@@ -139,39 +139,42 @@ const actions = {
   },
 
   editQuery: async ({ dispatch, commit }, query) => {
-    //upload image and get url
-    if (query.image.name) {
-      const storageRef = firebase
-        .storage()
-        .ref(`${query.image.name}`)
-        .put(query.image)
-      storageRef.on(`state_changed`, () => {
-        storageRef.snapshot.ref.getDownloadURL().then(url => {
-          query.image = url
+    try {
+      //upload image and get url
+      if (query.image.name) {
+        const storageRef = firebase
+          .storage()
+          .ref(`${query.image.name}`)
+          .put(query.image)
+        storageRef.on(`state_changed`, () => {
+          storageRef.snapshot.ref.getDownloadURL().then(url => {
+            query.image = url
+          })
         })
-      })
-    }
-    commit('EDIT_QUERY', query)
+      }
+      commit('EDIT_QUERY', query)
 
-    //add to DB
-    dispatch('updateDB')
-    console.log(state.ffQueries)
-    const { category, fandom } = query
+      //add to DB
+      console.log(state.ffQueries)
+      const { category, fandom } = query
 
-    if (Object.prototype.hasOwnProperty.call(state.categories, category)) {
-      if (state.categories[category].includes(fandom)) {
-        return
+      if (Object.prototype.hasOwnProperty.call(state.categories, category)) {
+        if (state.categories[category].includes(fandom)) {
+          return
+        } else {
+          await commit('SAVE_FANDOM', query)
+        }
       } else {
-        await commit('SAVE_FANDOM', query)
+        // if category doesn't exist, make a new category and add fandom to it
+        await commit('SAVE_NEW_CATEGORY', query)
       }
-    } else {
-      // if category doesn't exist, make a new category and add fandom to it
-      await commit('SAVE_NEW_CATEGORY', query)
-    }
-    for (const query in state.ffQueries) {
-      if (query.length === 0) {
-        Vue.delete(category)
+      for (const query in state.ffQueries) {
+        if (query.length === 0) {
+          Vue.delete(category)
+        }
       }
+    } finally {
+      dispatch('updateDB')
     }
   },
 

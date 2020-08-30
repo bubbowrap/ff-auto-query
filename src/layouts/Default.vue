@@ -231,12 +231,15 @@ export default {
     },
 
     async saveQuery() {
-      this.valid = this.$refs.queryForm.validate()
-      if (this.valid) {
-        await this.$store.dispatch('saveQuery', this.newQuery)
-        this.dialog = false
-        this.$refs.queryForm.resetValidation()
-        this.resetQuery()
+      try {
+        this.valid = this.$refs.queryForm.validate()
+        if (this.valid) {
+          await this.$store.dispatch('saveQuery', this.newQuery)
+          this.dialog = false
+        }
+      } finally {
+          this.$refs.queryForm.resetValidation()
+          this.resetQuery()
       }
     },
 

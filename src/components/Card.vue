@@ -205,7 +205,7 @@ export default {
       this.imageUploadText = event.target.files[0].name
     },
 
-    async editQuery() {
+    editQuery() {
       this.valid = this.$refs.editForm.validate()
       if (this.valid) {
         this.dialog = false
