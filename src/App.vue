@@ -1,8 +1,12 @@
 <template>
   <v-app>
-    <v-component :is="layout">
-      <router-view></router-view>
-    </v-component>
+    <transition name="fade" mode="out-in">
+      <v-component :is="layout">
+        <transition name="fade" mode="out-in">
+          <router-view></router-view>
+        </transition>
+      </v-component>
+    </transition>
   </v-app>
 </template>
 
@@ -18,3 +22,14 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.6s ease;
+}
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+</style>

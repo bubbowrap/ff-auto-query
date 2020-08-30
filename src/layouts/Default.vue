@@ -10,7 +10,7 @@
         >
       </div>
       <v-spacer></v-spacer>
-      <v-btn v-if="loggedIn"
+      <v-btn text @click="logout" v-if="loggedIn"
         ><v-icon left>mdi-account-circle</v-icon> Sign Out</v-btn
       >
       <v-btn text v-else to="/sign-in">
@@ -58,8 +58,9 @@
     <v-main>
       <v-container fluid>
         <v-col cols="12" class="ma-1">
-          <router-view></router-view>
-
+          <keep-alive>
+            <router-view></router-view>
+          </keep-alive>
           <v-btn fixed dark fab bottom right color="primary" @click="openForm">
             <v-icon>mdi-plus</v-icon>
             <!--Modal Form-->
@@ -86,6 +87,7 @@
                             autofocus
                             :rules="inputRules"
                             v-model="newQuery.fandom"
+                            @keydown.enter="saveQuery"
                           ></v-combobox>
                         </v-col>
                         <v-col cols="12" sm="6">
@@ -97,6 +99,7 @@
                             required
                             :rules="inputRules"
                             v-model="newQuery.category"
+                            @keydown.enter="saveQuery"
                           ></v-combobox>
                         </v-col>
                         <v-col cols="12" sm="6">
@@ -108,6 +111,7 @@
                             hint="enter a title for your query"
                             v-model="newQuery.title"
                             :rules="inputRules"
+                            @keydown.enter="saveQuery"
                           ></v-text-field>
                         </v-col>
                         <v-col
@@ -129,6 +133,7 @@
                             style="display: none"
                             @change="uploadImage"
                             accept="image/*"
+                            @keydown.enter="saveQuery"
                           />
                         </v-col>
                         <v-col cols="12">
@@ -148,6 +153,7 @@
                             filled
                             dense
                             v-model="newQuery.description"
+                            @keydown.enter="saveQuery"
                           ></v-text-field>
                         </v-col>
                       </v-row>
@@ -170,10 +176,11 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
-      loggedIn: false,
       drawer: true,
       dialog: false,
       lazy: false,
@@ -184,7 +191,7 @@ export default {
         category: '',
         title: '',
         description: '',
-        image: null,
+        image: '',
         favorited: false,
         link: '',
         id: Math.round(Date.now() + Math.random()),
@@ -204,6 +211,8 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['logout']),
+
     makePath(value) {
       const regex = /\s/gi
       return value.toLowerCase().replace(regex, '-')
@@ -221,11 +230,11 @@ export default {
       this.imageUploadText = event.target.files[0].name
     },
 
-    saveQuery() {
+    async saveQuery() {
       this.valid = this.$refs.queryForm.validate()
       if (this.valid) {
+        await this.$store.dispatch('saveQuery', this.newQuery)
         this.dialog = false
-        this.$store.dispatch('saveQuery', this.newQuery)
         this.$refs.queryForm.resetValidation()
         this.resetQuery()
       }
@@ -242,10 +251,13 @@ export default {
         link: '',
         id: Math.round(Date.now() + Math.random()),
       }
+      this.imageUploadText = 'Upload Image'
     },
   },
 
   computed: {
+    ...mapGetters(['loggedIn']),
+
     categories() {
       return this.$store.getters.categories
     },
@@ -254,6 +266,9 @@ export default {
         category => this.categories[category]
       )
     },
+  },
+  mounted() {
+    //console.log(this.$store.state.categories)
   },
 }
 </script>

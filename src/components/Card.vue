@@ -57,7 +57,7 @@
     </v-card>
 
     <!--Delete Form -->
-    
+
     <!--Modal Form-->
     <v-dialog v-model="dialog" max-width="600px" v-if="dialog" persistent>
       <v-form ref="editForm" :lazy-validation="lazy">
@@ -171,7 +171,7 @@ export default {
       cardQuery: { ...this.query },
       show: false,
       dialog: false,
-      lazy: true,
+      lazy: false,
       tempImage: null,
       valid: true,
       imageUploadText: this.query.image ? this.query.image : 'Upload Image',
@@ -193,7 +193,6 @@ export default {
     ...mapActions(['favQuery']),
 
     deleteQuery(value) {
-      alert('Are you sure?')
       this.$store.dispatch('deleteQuery', value)
     },
 
@@ -206,7 +205,7 @@ export default {
       this.imageUploadText = event.target.files[0].name
     },
 
-    editQuery() {
+    async editQuery() {
       this.valid = this.$refs.editForm.validate()
       if (this.valid) {
         this.dialog = false
