@@ -5,7 +5,7 @@ import 'firebase/auth'
 
 import Home from '@/views/Home.vue'
 import Category from '@/views/Category.vue'
-import notFound from '@/views/NotFound.vue'
+import NotFound from '@/views/NotFound.vue'
 import signIn from '@/views/GoogleSignIn.vue'
 
 Vue.use(VueRouter)
@@ -37,7 +37,7 @@ const routes = [
   {
     path: '/404',
     name: '404',
-    component: notFound,
+    component: NotFound,
     meta: { requiresAuth: true },
   },
   {
