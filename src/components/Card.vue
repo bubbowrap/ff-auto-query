@@ -65,7 +65,6 @@
           <v-card-title>
             <span class="headline">Edit Query</span>
             <v-spacer></v-spacer>
-            <!-- <v-btn icon @click="closeForm"><v-icon>mdi-close</v-icon></v-btn> -->
           </v-card-title>
           <v-card-text class="pb-0">
             <v-container class="pb-0">
@@ -77,7 +76,7 @@
                     filled
                     dense
                     required
-                    :rules="inputRules"
+                    :rules="comboRules"
                     v-model="cardQuery.fandom"
                     @keyup="cardQuery.fandom = $event.target.value"
                     @keydown.enter="editQuery"
@@ -90,7 +89,7 @@
                     filled
                     dense
                     required
-                    :rules="inputRules"
+                    :rules="comboRules"
                     v-model="cardQuery.category"
                     @keyup="cardQuery.category = $event.target.value"
                     @keydown.enter="editQuery"
@@ -157,13 +156,22 @@
         </v-card>
       </v-form>
     </v-dialog>
+
+    <v-snackbar v-model="snackbar" :timeout="timeout">
+      {{ snackbarText }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="primary" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-col>
 </template>
 
 <script>
 import * as firebase from 'firebase/app'
 import 'firebase/storage'
-import { mapActions } from 'vuex'
+//import { mapActions } from 'vuex'
 
 export default {
   props: ['query'],
@@ -177,9 +185,24 @@ export default {
       tempImage: null,
       valid: true,
       imageUploadText: this.query.image ? this.query.image : 'Upload Image',
+      snackbar: false,
+      snackbarText: '',
+      timeout: 2000,
+      comboRules: [
+        v => !!v || 'Field is required',
+        v => (v && v.length > 0) || 'Please enter more than 0 characters',
+        v => (v && v.length < 50) || 'Please enter less than 50 characters',
+        v => {
+          if (/^[a-zA-Z0-9!?&-@:;\s]*$/gi.test(v)) {
+            return true
+          }
+          return 'No special characters allowed'
+        },
+      ],
       inputRules: [
         v => !!v || 'Field is required',
         v => (v && v.length > 0) || 'Please enter more than 0 characters',
+        v => (v && v.length < 50) || 'Please enter less than 50 characters',
       ],
       urlRules: [
         v => !!v || 'URL is required',
@@ -192,10 +215,16 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['favQuery']),
+    favQuery(value) {
+      this.$store.dispatch('favQuery', value)
+      this.snackbarText = 'Query added to favorites!'
+      this.snackbar = true
+    },
 
     deleteQuery(value) {
       this.$store.dispatch('deleteQuery', value)
+      this.snackbarText = 'Query deleted!'
+      this.snackbar = true
     },
 
     openForm() {
@@ -224,6 +253,8 @@ export default {
         this.dialog = false
         if (this.tempImage !== null) this.cardQuery.image = this.tempImage
         this.$store.dispatch('editQuery', this.cardQuery)
+        this.snackbarText = 'Query updated!'
+        this.snackbar = true
       }
     },
   },

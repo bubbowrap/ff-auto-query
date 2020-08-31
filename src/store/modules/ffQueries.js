@@ -7,31 +7,11 @@ const state = {
   categories: {},
   //{
   // Movies: ['Mad Max', 'Marvel Cinematic Universe'],
-  // 'TV Shows': ['iCarly', 'AP Bio'],
+  // 'TV Shows': ['AP Bio'],
   // }
 
   ffQueries: [],
   // [
-  // {
-  //   fandom: 'Mad Max',
-  //   category: 'Movies',
-  //   title: 'Furiosa/Max',
-  //   description: 'Pairing of Max & Furiosa',
-  //   image: null,
-  //   favorited: false,
-  //   link: 'https://archiveofourown.com',
-  //   id: 1598402920206,
-  // },
-  // {
-  //   fandom: 'Mad Max',
-  //   category: 'Movies',
-  //   title: 'Furiosa/Max',
-  //   description: 'Pairing of Max & Furiosa',
-  //   image: 'https://vuejs.org/images/logo.png',
-  //   favorited: true,
-  //   link: 'https://archiveofourown.com',
-  //   id: 1598402920207,
-  // },
   // {
   //   fandom: 'Marvel Cinematic Universe',
   //   category: 'Movies',
@@ -102,13 +82,14 @@ const actions = {
     //if the category object has the category
     if (Object.prototype.hasOwnProperty.call(state.categories, category)) {
       //loop through the categories and check the fandom
-      state.categories[category].every(currentFandom => {
-        //if fandom doesn't exist in category
-        if (currentFandom !== fandom) {
-          //push new fandom to category
-          commit('SAVE_FANDOM', query)
-        }
-      })
+      const saveFandom = state.categories[category].every(
+        currentFandom => currentFandom !== fandom
+      )
+      //if fandom doesn't exist in category
+      if (saveFandom) {
+        //push new fandom to category
+        commit('SAVE_FANDOM', query)
+      }
     } else {
       // if category doesn't exist, make a new category and add fandom to it
       commit('SAVE_NEW_CATEGORY', query)

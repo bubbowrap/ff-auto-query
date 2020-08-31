@@ -67,112 +67,121 @@
           <router-view></router-view>
           <v-btn fixed dark fab bottom right color="primary" @click="openForm">
             <v-icon>mdi-plus</v-icon>
-            <!--Modal Form-->
-            <v-dialog v-model="dialog" max-width="600px">
-              <v-form ref="queryForm" :lazy-validation="lazy">
-                <v-card>
-                  <v-card-title>
-                    <span class="headline">Add New Query</span>
-                    <v-spacer></v-spacer>
-                    <v-btn icon @click="closeForm"
-                      ><v-icon>mdi-close</v-icon></v-btn
-                    >
-                  </v-card-title>
-                  <v-card-text class="pb-0">
-                    <v-container class="pb-0">
-                      <v-row>
-                        <v-col cols="12" sm="6">
-                          <v-combobox
-                            :items="allFandoms"
-                            label="Fandom*"
-                            filled
-                            dense
-                            required
-                            autofocus
-                            :rules="inputRules"
-                            v-model="newQuery.fandom"
-                            @keydown.enter="saveQuery"
-                          ></v-combobox>
-                        </v-col>
-                        <v-col cols="12" sm="6">
-                          <v-combobox
-                            :items="Object.keys(this.categories)"
-                            label="Category*"
-                            filled
-                            dense
-                            required
-                            :rules="inputRules"
-                            v-model="newQuery.category"
-                            @keydown.enter="saveQuery"
-                          ></v-combobox>
-                        </v-col>
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            label="Query Title*"
-                            filled
-                            dense
-                            required
-                            hint="enter a title for your query"
-                            v-model="newQuery.title"
-                            :rules="inputRules"
-                            @keydown.enter="saveQuery"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col
-                          cols="12"
-                          sm="6"
-                          class="d-flex pt-3 pb-9 pa-md-3"
-                        >
-                          <v-btn
-                            @click="$refs.fileInput.click()"
-                            outlined
-                            x-large
-                            class="flex-grow-1"
-                            color="primary"
-                            >{{ imageUploadText }}</v-btn
-                          >
-                          <input
-                            type="file"
-                            ref="fileInput"
-                            style="display: none"
-                            @change="uploadImage"
-                            accept="image/*"
-                            @keydown.enter="saveQuery"
-                          />
-                        </v-col>
-                        <v-col cols="12">
-                          <v-text-field
-                            label="Query Link*"
-                            filled
-                            dense
-                            required
-                            :rules="urlRules"
-                            v-model="newQuery.link"
-                            @keydown.enter="saveQuery"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-text-field
-                            label="Query Description"
-                            filled
-                            dense
-                            v-model="newQuery.description"
-                            @keydown.enter="saveQuery"
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn block x-large color="primary" @click="saveQuery"
-                      >Save Query</v-btn
-                    >
-                  </v-card-actions>
-                </v-card>
-              </v-form>
-            </v-dialog>
           </v-btn>
+          <!--Modal Form-->
+          <v-dialog v-model="dialog" max-width="600px">
+            <v-form ref="queryForm" :lazy-validation="lazy">
+              <v-card>
+                <v-card-title>
+                  <span class="headline">Add New Query</span>
+                  <v-spacer></v-spacer>
+                  <v-btn icon @click="closeForm"
+                    ><v-icon>mdi-close</v-icon></v-btn
+                  >
+                </v-card-title>
+                <v-card-text class="pb-0">
+                  <v-container class="pb-0">
+                    <v-row>
+                      <v-col cols="12" sm="6">
+                        <v-combobox
+                          :items="allFandoms"
+                          label="Fandom*"
+                          filled
+                          dense
+                          required
+                          autofocus
+                          :rules="comboRules"
+                          v-model="newQuery.fandom"
+                          @keydown.enter="saveQuery"
+                        ></v-combobox>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-combobox
+                          :items="Object.keys(this.categories)"
+                          label="Category*"
+                          filled
+                          dense
+                          required
+                          :rules="comboRules"
+                          v-model="newQuery.category"
+                          @keydown.enter="saveQuery"
+                        ></v-combobox>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          label="Query Title*"
+                          filled
+                          dense
+                          required
+                          hint="enter a title for your query"
+                          v-model="newQuery.title"
+                          :rules="inputRules"
+                          @keydown.enter="saveQuery"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" class="d-flex pt-3 pb-9 pa-md-3">
+                        <v-btn
+                          @click="$refs.fileInput.click()"
+                          outlined
+                          x-large
+                          class="flex-grow-1"
+                          color="primary"
+                          >{{ imageUploadText }}</v-btn
+                        >
+                        <input
+                          type="file"
+                          ref="fileInput"
+                          style="display: none"
+                          @change="uploadImage"
+                          accept="image/*"
+                          @keydown.enter="saveQuery"
+                        />
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                          label="Query Link*"
+                          filled
+                          dense
+                          required
+                          :rules="urlRules"
+                          v-model="newQuery.link"
+                          @keydown.enter="saveQuery"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                          label="Query Description"
+                          filled
+                          dense
+                          v-model="newQuery.description"
+                          @keydown.enter="saveQuery"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn block x-large color="primary" @click="saveQuery"
+                    >Save Query</v-btn
+                  >
+                </v-card-actions>
+              </v-card>
+            </v-form>
+          </v-dialog>
+          <v-snackbar v-model="snackbar" :timeout="timeout">
+            {{ snackbarText }}
+            <template v-slot:action="{ attrs }">
+              <v-btn
+                color="primary"
+                text
+                v-bind="attrs"
+                @click="snackbar = false"
+              >
+                Close
+              </v-btn>
+            </template>
+          </v-snackbar>
         </v-col>
       </v-container>
     </v-main>
@@ -202,9 +211,24 @@ export default {
         link: '',
         id: Math.round(Date.now() + Math.random()),
       },
+      snackbar: false,
+      snackbarText: '',
+      timeout: 2000,
+      comboRules: [
+        v => !!v || 'Field is required',
+        v => (v && v.length > 0) || 'Please enter more than 0 characters',
+        v => (v && v.length < 50) || 'Please enter less than 50 characters',
+        v => {
+          if (/^[a-zA-Z0-9!?&-@:;\s]*$/gi.test(v)) {
+            return true
+          }
+          return 'No special characters allowed'
+        },
+      ],
       inputRules: [
         v => !!v || 'Field is required',
         v => (v && v.length > 0) || 'Please enter more than 0 characters',
+        v => (v && v.length < 50) || 'Please enter less than 50 characters',
       ],
       urlRules: [
         v => !!v || 'URL is required',
@@ -220,8 +244,12 @@ export default {
     ...mapActions(['logout']),
 
     makePath(value) {
-      const regex = /\s/gi
-      return value.toLowerCase().replace(regex, '-')
+      const regex = /[\s!?&-@:;]/gi
+      const dashRegex = /-+/g
+      return value
+        .toLowerCase()
+        .replace(regex, '-')
+        .replace(dashRegex, '-')
     },
     openForm() {
       this.dialog = true
@@ -253,9 +281,11 @@ export default {
       if (this.valid) {
         this.$store.dispatch('saveQuery', this.newQuery)
         this.dialog = false
+        this.$refs.queryForm.resetValidation()
+        this.resetQuery()
+        this.snackbarText = 'Query saved!'
+        this.snackbar = true
       }
-      this.$refs.queryForm.resetValidation()
-      this.resetQuery()
     },
 
     resetQuery() {
@@ -285,10 +315,21 @@ export default {
       )
     },
   },
+
+  created() {
+    if (window.innerWidth < 600) {
+      this.drawer = false
+    }
+  },
 }
 </script>
 
 <style lang="scss">
+h1 {
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
 .v-toolbar__title {
   .v-toolbar-logo {
     color: rgba(255, 255, 255, 0.85);
