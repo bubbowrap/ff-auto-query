@@ -7,9 +7,9 @@
     <template v-else>
       <h1>Save Your Favorite Filters.</h1>
       <p>
-        Hey {{ user.name ? user.name : 'There' }}! Save and View all of your top visited AO3 queries
-        in one central location and get some of your precious time back. Click
-        on the button in the corner to get started.
+        Hey {{ user.name ? user.name : 'There' }}! Save and View all of your top
+        visited AO3 queries in one central location and get some of your
+        precious time back. Click on the button in the corner to get started.
       </p>
     </template>
   </div>

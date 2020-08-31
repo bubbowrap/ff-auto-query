@@ -29,13 +29,12 @@ new Vue({
         store.dispatch('fetchUserData')
         store.dispatch('updateUser', user)
         router.push('/')
-    
       } else {
         store.commit('LOGOUT')
         router.push('/sign-in')
       }
     })
-  }
+  },
 }).$mount('#app')
 //   }
 // })

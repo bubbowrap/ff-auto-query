@@ -23,7 +23,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.6s ease;
@@ -31,5 +31,13 @@ export default {
 .fade-enter,
 .fade-leave-active {
   opacity: 0;
+}
+.theme--dark.v-card,
+.theme--dark.v-app-bar.v-toolbar.v-sheet,
+.theme--dark.v-navigation-drawer {
+  background: #232e3a !important;
+}
+.theme--dark.v-application {
+  background: #0f1419 !important;
 }
 </style>

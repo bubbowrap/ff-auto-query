@@ -2,7 +2,7 @@
   <v-img
     height="100vh"
     class="set-opacity"
-    src="https://cdn.pixabay.com/photo/2014/07/01/12/37/kindle-381242_960_720.jpg"
+    src="../assets/kindle-381242_1280-min.jpg"
   >
     <v-container class="d-flex">
       <v-row class="align-self-center" justify="center">

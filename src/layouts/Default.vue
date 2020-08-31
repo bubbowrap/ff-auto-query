@@ -19,7 +19,13 @@
       </v-btn>
     </v-app-bar>
 
-    <v-navigation-drawer floating v-model="drawer" app mobile-breakpoint="600">
+    <v-navigation-drawer
+      floating
+      v-model="drawer"
+      app
+      mobile-breakpoint="600"
+      src="../assets/night-4702174_1280.jpg"
+    >
       <v-list class="pt-0">
         <v-list-item to="/">
           <v-list-item-content>
@@ -58,7 +64,7 @@
     <v-main>
       <v-container fluid>
         <v-col cols="12" class="ma-1">
-            <router-view></router-view>
+          <router-view></router-view>
           <v-btn fixed dark fab bottom right color="primary" @click="openForm">
             <v-icon>mdi-plus</v-icon>
             <!--Modal Form-->
@@ -285,10 +291,12 @@ export default {
 <style lang="scss">
 .v-toolbar__title {
   .v-toolbar-logo {
-    color: white;
+    color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
+    transition: color 0.2s ease;
 
     &:hover {
+      color: white;
     }
   }
 }

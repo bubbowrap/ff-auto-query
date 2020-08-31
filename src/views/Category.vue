@@ -33,19 +33,11 @@ export default {
         ? Object.keys(this.$store.getters.categories)
         : {}
 
-      if (categoryList.length && typeof categoryList !== 'undefined') {
-        categoryList = categoryList
-          .filter(cat => this.category === this.makePath(cat))[0]
-          .toString()
-          return categoryList
-      } else {
-        return 'hey'
-      }
-      // return categoryList.length && typeof categoryList !== 'undefined'
-      //   ? categoryList
-      //       .filter(cat => this.category === this.makePath(cat))[0]
-      //       .toString()
-      //   : '404'
+      return categoryList.length && typeof categoryList !== 'undefined'
+        ? categoryList
+            .filter(cat => this.category === this.makePath(cat))[0]
+            .toString()
+        : '404'
     },
   },
   components: {

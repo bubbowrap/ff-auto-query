@@ -1,10 +1,7 @@
 import Vue from 'vue'
 import * as firebase from 'firebase/app'
 import 'firebase/database'
-import 'firebase/storage'
 import 'firebase/auth'
-
-//import users from './users'
 
 const state = {
   categories: {},
@@ -99,22 +96,6 @@ const mutations = {
 
 const actions = {
   saveQuery: ({ dispatch, commit }, query) => {
-    //upload image and get url
-    // if (query.image !== null && query.image.name) {
-    //   const storageRef = firebase
-    //     .storage()
-    //     .ref(`${query.image.name}`)
-    //     .put(query.image)
-    //   storageRef.on(`state_changed`, () => {
-    //     storageRef.snapshot.ref.getDownloadURL().then(url => {
-    //       query.image = url
-    //     })
-    //   })
-
-    // } else {
-    //   query.image = ''
-    // }
-
     commit('SAVE_QUERY', query)
 
     const { category, fandom } = query
@@ -139,34 +120,33 @@ const actions = {
   favQuery: ({ dispatch, commit }, value) => {
     value.favorited = !value.favorited
     commit('FAV_QUERY', value)
-    //add to DB
     dispatch('updateDB')
   },
 
   editQuery: async ({ dispatch, commit }, query) => {
     try {
-    await commit('EDIT_QUERY', query)
+      await commit('EDIT_QUERY', query)
 
-    const { category, fandom } = query
+      const { category, fandom } = query
 
-    if (Object.prototype.hasOwnProperty.call(state.categories, category)) {
-      if (state.categories[category].includes(fandom)) {
-        return
+      if (Object.prototype.hasOwnProperty.call(state.categories, category)) {
+        if (state.categories[category].includes(fandom)) {
+          return
+        } else {
+          commit('SAVE_FANDOM', query)
+        }
       } else {
-        commit('SAVE_FANDOM', query)
+        // if category doesn't exist, make a new category and add fandom to it
+        commit('SAVE_NEW_CATEGORY', query)
       }
-    } else {
-      // if category doesn't exist, make a new category and add fandom to it
-      commit('SAVE_NEW_CATEGORY', query)
-    }
-    for (const query in state.ffQueries) {
-      if (query.length === 0) {
-        Vue.delete(category)
+      for (const query in state.ffQueries) {
+        if (query.length === 0) {
+          Vue.delete(category)
+        }
       }
+    } finally {
+      dispatch('updateDB')
     }
-  } finally {
-    dispatch('updateDB')
-  }
   },
 
   updateDB: () => {
@@ -189,7 +169,6 @@ const actions = {
 
   deleteQuery: async ({ dispatch, commit }, value) => {
     await commit('DELETE_QUERY', value)
-    //add to DB
     dispatch('updateDB')
   },
 
@@ -219,9 +198,6 @@ const getters = {
   },
   ffQueries: () => {
     return state.ffQueries
-  },
-  favoriteQueries: () => {
-    return state.ffQueries.filter(query => query.favorited === true)
   },
 }
 
