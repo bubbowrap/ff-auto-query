@@ -161,6 +161,8 @@
 </template>
 
 <script>
+import * as firebase from 'firebase/app'
+import 'firebase/storage'
 import { mapActions } from 'vuex'
 
 export default {
@@ -203,6 +205,17 @@ export default {
     updateImage() {
       this.tempImage = event.target.files[0]
       this.imageUploadText = event.target.files[0].name
+
+      //upload img get url
+      const storageRef = firebase
+        .storage()
+        .ref(`${this.tempImage.name}`)
+        .put(this.tempImage)
+      storageRef.on(`state_changed`, () => {
+        storageRef.snapshot.ref.getDownloadURL().then(url => {
+          this.tempImage = url
+        })
+      })
     },
 
     editQuery() {

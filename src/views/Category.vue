@@ -18,22 +18,34 @@ export default {
   },
   computed: {
     fandomTitle() {
-      let fandomList = Object.keys(this.$store.getters.categories).flatMap(
-        category => this.$store.getters.categories[category]
-      )
+      let fandomList = this.$store.getters.categories
+        ? Object.keys(this.$store.getters.categories).flatMap(
+            category => this.$store.getters.categories[category]
+          )
+        : {}
       //if fandom make path equals loop through fandomList, make path
       return fandomList.length && typeof fandomList !== 'undefined'
         ? fandomList.filter(f => this.fandom === this.makePath(f))[0].toString()
-        : null
+        : '404'
     },
     categoryWord() {
-      let categoryList = Object.keys(this.$store.getters.categories)
+      let categoryList = this.$store.getters.categories
+        ? Object.keys(this.$store.getters.categories)
+        : {}
 
-      return categoryList.length && typeof categoryList !== 'undefined'
-        ? categoryList
-            .filter(cat => this.category === this.makePath(cat))[0]
-            .toString()
-        : null
+      if (categoryList.length && typeof categoryList !== 'undefined') {
+        categoryList = categoryList
+          .filter(cat => this.category === this.makePath(cat))[0]
+          .toString()
+          return categoryList
+      } else {
+        return 'hey'
+      }
+      // return categoryList.length && typeof categoryList !== 'undefined'
+      //   ? categoryList
+      //       .filter(cat => this.category === this.makePath(cat))[0]
+      //       .toString()
+      //   : '404'
     },
   },
   components: {
@@ -44,15 +56,6 @@ export default {
       const regex = /\s/gi
       return value.toLowerCase().replace(regex, '-')
     },
-
-    // unmakePath(value) {
-    //   // const regex = /-/gi
-    //   return value
-    //     .split('-')
-    //     .map(v => v.charAt(0).toUpperCase())
-    //     .join(' ')
-    //   //return value.toLowerCase().replace(regex, ' ').
-    // },
   },
 }
 </script>

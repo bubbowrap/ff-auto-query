@@ -58,9 +58,7 @@
     <v-main>
       <v-container fluid>
         <v-col cols="12" class="ma-1">
-          <keep-alive>
             <router-view></router-view>
-          </keep-alive>
           <v-btn fixed dark fab bottom right color="primary" @click="openForm">
             <v-icon>mdi-plus</v-icon>
             <!--Modal Form-->
@@ -176,6 +174,8 @@
 </template>
 
 <script>
+import * as firebase from 'firebase/app'
+import 'firebase/storage'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
@@ -191,7 +191,7 @@ export default {
         category: '',
         title: '',
         description: '',
-        image: '',
+        image: null,
         favorited: false,
         link: '',
         id: Math.round(Date.now() + Math.random()),
@@ -228,19 +228,28 @@ export default {
     uploadImage() {
       this.newQuery.image = event.target.files[0]
       this.imageUploadText = event.target.files[0].name
+
+      //upload img get url
+      const storageRef = firebase
+        .storage()
+        .ref(`${this.newQuery.image.name}`)
+        .put(this.newQuery.image)
+      storageRef.on(`state_changed`, () => {
+        storageRef.snapshot.ref.getDownloadURL().then(url => {
+          this.newQuery.image = url
+        })
+      })
     },
 
-    async saveQuery() {
-      try {
-        this.valid = this.$refs.queryForm.validate()
-        if (this.valid) {
-          await this.$store.dispatch('saveQuery', this.newQuery)
-          this.dialog = false
-        }
-      } finally {
-          this.$refs.queryForm.resetValidation()
-          this.resetQuery()
+    saveQuery() {
+      this.valid = this.$refs.queryForm.validate()
+
+      if (this.valid) {
+        this.$store.dispatch('saveQuery', this.newQuery)
+        this.dialog = false
       }
+      this.$refs.queryForm.resetValidation()
+      this.resetQuery()
     },
 
     resetQuery() {
@@ -269,9 +278,6 @@ export default {
         category => this.categories[category]
       )
     },
-  },
-  mounted() {
-    //console.log(this.$store.state.categories)
   },
 }
 </script>

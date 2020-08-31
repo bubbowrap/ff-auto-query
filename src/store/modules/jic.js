@@ -59,3 +59,12 @@
 //   </div></template
 // >
 // </v-file-input> -->
+
+// unmakePath(value) {
+//   // const regex = /-/gi
+//   return value
+//     .split('-')
+//     .map(v => v.charAt(0).toUpperCase())
+//     .join(' ')
+//   //return value.toLowerCase().replace(regex, ' ').
+// },

@@ -49,11 +49,11 @@ const routes = [
       requiresGuest: true,
     },
   },
-  // {
-  //   path: '*',
-  //   redirect: '/404',
-  //   meta: { requiresAuth: true },
-  // },
+  {
+    path: '*',
+    redirect: '/404',
+    meta: { requiresAuth: true },
+  },
 ]
 
 const router = new VueRouter({

@@ -67,7 +67,9 @@ const mutations = {
   },
 
   DELETE_FANDOM(state, value) {
-    const i = state.categories[value[0]].indexOf(value[1])
+    const i = state.categories[value[0]]
+      ? state.categories[value[0]].indexOf(value[1])
+      : {}
     if (i > -1) state.categories[value[0]].splice(i, 1)
   },
 
@@ -98,19 +100,23 @@ const mutations = {
 const actions = {
   saveQuery: ({ dispatch, commit }, query) => {
     //upload image and get url
-    if (query.image.name) {
-      const storageRef = firebase
-        .storage()
-        .ref(`${query.image.name}`)
-        .put(query.image)
-      storageRef.on(`state_changed`, () => {
-        storageRef.snapshot.ref.getDownloadURL().then(url => {
-          query.image = url
-        })
-      })
-    }
+    // if (query.image !== null && query.image.name) {
+    //   const storageRef = firebase
+    //     .storage()
+    //     .ref(`${query.image.name}`)
+    //     .put(query.image)
+    //   storageRef.on(`state_changed`, () => {
+    //     storageRef.snapshot.ref.getDownloadURL().then(url => {
+    //       query.image = url
+    //     })
+    //   })
+
+    // } else {
+    //   query.image = ''
+    // }
 
     commit('SAVE_QUERY', query)
+
     const { category, fandom } = query
     //if the category object has the category
     if (Object.prototype.hasOwnProperty.call(state.categories, category)) {
@@ -127,7 +133,6 @@ const actions = {
       commit('SAVE_NEW_CATEGORY', query)
     }
 
-    //add to DB
     dispatch('updateDB')
   },
 
@@ -140,42 +145,28 @@ const actions = {
 
   editQuery: async ({ dispatch, commit }, query) => {
     try {
-      //upload image and get url
-      if (query.image.name) {
-        const storageRef = firebase
-          .storage()
-          .ref(`${query.image.name}`)
-          .put(query.image)
-        storageRef.on(`state_changed`, () => {
-          storageRef.snapshot.ref.getDownloadURL().then(url => {
-            query.image = url
-          })
-        })
-      }
-      commit('EDIT_QUERY', query)
+    await commit('EDIT_QUERY', query)
 
-      //add to DB
-      console.log(state.ffQueries)
-      const { category, fandom } = query
+    const { category, fandom } = query
 
-      if (Object.prototype.hasOwnProperty.call(state.categories, category)) {
-        if (state.categories[category].includes(fandom)) {
-          return
-        } else {
-          await commit('SAVE_FANDOM', query)
-        }
+    if (Object.prototype.hasOwnProperty.call(state.categories, category)) {
+      if (state.categories[category].includes(fandom)) {
+        return
       } else {
-        // if category doesn't exist, make a new category and add fandom to it
-        await commit('SAVE_NEW_CATEGORY', query)
+        commit('SAVE_FANDOM', query)
       }
-      for (const query in state.ffQueries) {
-        if (query.length === 0) {
-          Vue.delete(category)
-        }
-      }
-    } finally {
-      dispatch('updateDB')
+    } else {
+      // if category doesn't exist, make a new category and add fandom to it
+      commit('SAVE_NEW_CATEGORY', query)
     }
+    for (const query in state.ffQueries) {
+      if (query.length === 0) {
+        Vue.delete(category)
+      }
+    }
+  } finally {
+    dispatch('updateDB')
+  }
   },
 
   updateDB: () => {
@@ -191,8 +182,9 @@ const actions = {
       .catch(error => console.error(error))
   },
 
-  deleteCategory: ({ commit }, value) => {
+  deleteCategory: ({ dispatch, commit }, value) => {
     commit('DELETE_CATEGORY', value)
+    dispatch('updateDB')
   },
 
   deleteQuery: async ({ dispatch, commit }, value) => {
@@ -201,8 +193,9 @@ const actions = {
     dispatch('updateDB')
   },
 
-  deleteFandom: ({ commit }, value) => {
+  deleteFandom: ({ dispatch, commit }, value) => {
     commit('DELETE_FANDOM', value)
+    dispatch('updateDB')
   },
 
   fetchUserData({ commit }) {
