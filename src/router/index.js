@@ -3,10 +3,10 @@ import VueRouter from 'vue-router'
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
 
-import Home from '../views/Home.vue'
-import Category from '../views/Category.vue'
-import notFound from '../views/NotFound.vue'
-import signIn from '../views/GoogleSignIn.vue'
+import Home from '@/views/Home.vue'
+import Category from '@/views/Category.vue'
+import notFound from '@/views/NotFound.vue'
+import signIn from '@/views/GoogleSignIn.vue'
 
 Vue.use(VueRouter)
 
