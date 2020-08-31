@@ -1,11 +1,6 @@
 <template>
   <v-row v-if="ffQueries.length">
-    <Card
-      v-for="query in ffQueries"
-      :query="query"
-      :key="query.id"
-      @checkQueries="checkQueries()"
-    />
+    <Card v-for="query in ffQueries" :query="query" :key="query.id" />
   </v-row>
   <v-row v-else>
     <v-col>
@@ -21,28 +16,31 @@
 import Card from './Card'
 
 export default {
-  props: ['favoriteQueries', 'fandom', 'category'],
+  props: ['favoritedQueries', 'fandom', 'category'],
   components: {
     Card,
   },
 
   watch: {
-    navCategories() {
-      this.checkFandoms()
+    async navCategories() {
+      for (let category in this.$store.getters.categories) {
+        if (this.$store.getters.categories[category].length === 0) {
+          await this.$store.dispatch('deleteCategory', category)
+        }
+      }
     },
-    ffQueries() {
-      this.checkFandoms()
-    },
-  },
-
-  methods: {
-    checkFandoms() {
+    async ffQueries() {
       //remove Fandom from array if empty
       if (this.ffQueries.length === 0) {
-        this.$store.dispatch('deleteFandom', [this.category, this.fandom])
-        this.$router.push('/404')
+        try {
+          await this.$router.push('/404').catch(error => {
+            console.info(error.message)
+          })
+        } finally {
+          this.$store.dispatch('deleteFandom', [this.category, this.fandom])
+        }
       }
-      //remove category if empty
+
       for (let category in this.$store.getters.categories) {
         if (this.$store.getters.categories[category].length === 0) {
           this.$store.dispatch('deleteCategory', category)
@@ -51,12 +49,16 @@ export default {
     },
   },
 
+  methods: {
+    checkFandoms() {},
+  },
+
   computed: {
     navCategories() {
       return this.$store.getters.categories
     },
     ffQueries() {
-      if (this.favoriteQueries) {
+      if (this.favoritedQueries) {
         return this.$store.getters.ffQueries.filter(
           query => query.favorited === true
         )

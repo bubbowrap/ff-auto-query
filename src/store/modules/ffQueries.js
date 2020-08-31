@@ -1,46 +1,48 @@
 import Vue from 'vue'
 import * as firebase from 'firebase/app'
 import 'firebase/database'
-import 'firebase/storage'
+import 'firebase/auth'
 
 const state = {
-  categories: {
-    // Movies: ['Mad Max', 'Marvel Cinematic Universe'],
-    // 'TV Shows': ['iCarly', 'AP Bio'],
-  },
+  categories: {},
+  //{
+  // Movies: ['Mad Max', 'Marvel Cinematic Universe'],
+  // 'TV Shows': ['iCarly', 'AP Bio'],
+  // }
 
-  ffQueries: [
-    {
-      fandom: 'Mad Max',
-      category: 'Movies',
-      title: 'Furiosa/Max',
-      description: 'Pairing of Max & Furiosa',
-      image: null,
-      favorited: false,
-      link: 'https://archiveofourown.com',
-      id: 1598402920206,
-    },
-    {
-      fandom: 'Mad Max',
-      category: 'Movies',
-      title: 'Furiosa/Max',
-      description: 'Pairing of Max & Furiosa',
-      image: 'https://vuejs.org/images/logo.png',
-      favorited: true,
-      link: 'https://archiveofourown.com',
-      id: 1598402920207,
-    },
-    {
-      fandom: 'Marvel Cinematic Universe',
-      category: 'Movies',
-      title: 'Peter Parker/Michelle Jones',
-      description: 'Pairing of Max & Furiosa',
-      image: 'https://vuejs.org/images/logo.png',
-      favorited: true,
-      link: 'https://archiveofourown.com',
-      id: 1598402920208,
-    },
-  ],
+  ffQueries: [],
+  // [
+  // {
+  //   fandom: 'Mad Max',
+  //   category: 'Movies',
+  //   title: 'Furiosa/Max',
+  //   description: 'Pairing of Max & Furiosa',
+  //   image: null,
+  //   favorited: false,
+  //   link: 'https://archiveofourown.com',
+  //   id: 1598402920206,
+  // },
+  // {
+  //   fandom: 'Mad Max',
+  //   category: 'Movies',
+  //   title: 'Furiosa/Max',
+  //   description: 'Pairing of Max & Furiosa',
+  //   image: 'https://vuejs.org/images/logo.png',
+  //   favorited: true,
+  //   link: 'https://archiveofourown.com',
+  //   id: 1598402920207,
+  // },
+  // {
+  //   fandom: 'Marvel Cinematic Universe',
+  //   category: 'Movies',
+  //   title: 'Peter Parker/Michelle Jones',
+  //   description: 'Pairing of Max & Furiosa',
+  //   image: 'https://vuejs.org/images/logo.png',
+  //   favorited: true,
+  //   link: 'https://archiveofourown.com',
+  //   id: 1598402920208,
+  // },
+  // ],
 }
 
 const mutations = {
@@ -62,7 +64,9 @@ const mutations = {
   },
 
   DELETE_FANDOM(state, value) {
-    const i = state.categories[value[0]].indexOf(value[1])
+    const i = state.categories[value[0]]
+      ? state.categories[value[0]].indexOf(value[1])
+      : {}
     if (i > -1) state.categories[value[0]].splice(i, 1)
   },
 
@@ -83,23 +87,17 @@ const mutations = {
       query.id === value.id ? value : query
     )
   },
+
+  FETCH_USER_DATA(state, userData) {
+    state.categories = userData.categories
+    state.ffQueries = userData.ffQueries
+  },
 }
 
 const actions = {
-  saveQuery: ({ commit }, query) => {
-    //upload image and get url
-    if (query.image !== null && query.image.name) {
-      const storageRef = firebase
-        .storage()
-        .ref(`${query.image.name}`)
-        .put(query.image)
-      storageRef.on(`state_changed`, () => {
-        storageRef.snapshot.ref.getDownloadURL().then(url => {
-          query.image = url
-        })
-      })
-    }
+  saveQuery: ({ dispatch, commit }, query) => {
     commit('SAVE_QUERY', query)
+
     const { category, fandom } = query
     //if the category object has the category
     if (Object.prototype.hasOwnProperty.call(state.categories, category)) {
@@ -115,56 +113,82 @@ const actions = {
       // if category doesn't exist, make a new category and add fandom to it
       commit('SAVE_NEW_CATEGORY', query)
     }
+
+    dispatch('updateDB')
   },
 
-  favQuery: ({ commit }, value) => {
+  favQuery: ({ dispatch, commit }, value) => {
     value.favorited = !value.favorited
     commit('FAV_QUERY', value)
+    dispatch('updateDB')
   },
 
-  editQuery: ({ commit }, query) => {
-    //upload image and get url
-    if (query.image !== null && query.image.name) {
-      const storageRef = firebase
-        .storage()
-        .ref(`${query.image.name}`)
-        .put(query.image)
-      storageRef.on(`state_changed`, () => {
-        storageRef.snapshot.ref.getDownloadURL().then(url => {
-          query.image = url
-        })
-      })
-    }
-    commit('EDIT_QUERY', query)
+  editQuery: async ({ dispatch, commit }, query) => {
+    try {
+      await commit('EDIT_QUERY', query)
 
-    const { category, fandom } = query
-    if (Object.prototype.hasOwnProperty.call(state.categories, category)) {
-      if (state.categories[category].includes(fandom)) {
-        return
+      const { category, fandom } = query
+
+      if (Object.prototype.hasOwnProperty.call(state.categories, category)) {
+        if (state.categories[category].includes(fandom)) {
+          return
+        } else {
+          commit('SAVE_FANDOM', query)
+        }
       } else {
-        commit('SAVE_FANDOM', query)
+        // if category doesn't exist, make a new category and add fandom to it
+        commit('SAVE_NEW_CATEGORY', query)
       }
-    } else {
-      // if category doesn't exist, make a new category and add fandom to it
-      commit('SAVE_NEW_CATEGORY', query)
-    }
-    for (const query in state.ffQueries) {
-      if (query.length === 0) {
-        Vue.delete(category)
+      for (const query in state.ffQueries) {
+        if (query.length === 0) {
+          Vue.delete(category)
+        }
       }
+    } finally {
+      dispatch('updateDB')
     }
   },
 
-  deleteCategory: ({ commit }, value) => {
+  updateDB: () => {
+    //add to DB
+    let uid = firebase.auth().currentUser.uid
+    firebase
+      .database()
+      .ref('users/' + uid)
+      .update({
+        categories: state.categories,
+        ffQueries: state.ffQueries,
+      })
+      .catch(error => console.error(error))
+  },
+
+  deleteCategory: ({ dispatch, commit }, value) => {
     commit('DELETE_CATEGORY', value)
+    dispatch('updateDB')
   },
 
-  deleteQuery: ({ commit }, value) => {
-    commit('DELETE_QUERY', value)
+  deleteQuery: async ({ dispatch, commit }, value) => {
+    await commit('DELETE_QUERY', value)
+    dispatch('updateDB')
   },
 
-  deleteFandom: ({ commit }, value) => {
+  deleteFandom: ({ dispatch, commit }, value) => {
     commit('DELETE_FANDOM', value)
+    dispatch('updateDB')
+  },
+
+  fetchUserData({ commit }) {
+    const uid = firebase.auth().currentUser.uid
+    firebase
+      .database()
+      .ref('users/' + uid)
+      .once('value')
+      .then(data => {
+        const categories = data.val().categories ? data.val().categories : {}
+        const ffQueries = data.val().ffQueries ? data.val().ffQueries : []
+        commit('FETCH_USER_DATA', { categories, ffQueries })
+      })
+      .catch(error => console.error(error))
   },
 }
 
@@ -174,9 +198,6 @@ const getters = {
   },
   ffQueries: () => {
     return state.ffQueries
-  },
-  favoriteQueries: () => {
-    return state.ffQueries.filter(query => query.favorited === true)
   },
 }
 

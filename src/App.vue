@@ -1,8 +1,12 @@
 <template>
   <v-app>
-    <v-component :is="layout">
-      <router-view></router-view>
-    </v-component>
+    <transition name="fade" mode="out-in">
+      <v-component :is="layout">
+        <transition name="fade" mode="out-in">
+          <router-view></router-view>
+        </transition>
+      </v-component>
+    </transition>
   </v-app>
 </template>
 
@@ -18,3 +22,22 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.6s ease;
+}
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+.theme--dark.v-card,
+.theme--dark.v-app-bar.v-toolbar.v-sheet,
+.theme--dark.v-navigation-drawer {
+  background: #232e3a !important;
+}
+.theme--dark.v-application {
+  background: #0f1419 !important;
+}
+</style>

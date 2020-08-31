@@ -3,12 +3,14 @@
     <v-app-bar app dense flat dark>
       <div class="d-flex align-center">
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-toolbar-title class="ml-2" link to="/"
-          >Fanfic Auto Query</v-toolbar-title
+        <v-toolbar-title class="ml-2"
+          ><a href="/" class="v-toolbar-logo"
+            >Fanfic Auto Query</a
+          ></v-toolbar-title
         >
       </div>
       <v-spacer></v-spacer>
-      <v-btn v-if="loggedIn"
+      <v-btn text @click="logout" v-if="loggedIn"
         ><v-icon left>mdi-account-circle</v-icon> Sign Out</v-btn
       >
       <v-btn text v-else to="/sign-in">
@@ -17,11 +19,17 @@
       </v-btn>
     </v-app-bar>
 
-    <v-navigation-drawer floating v-model="drawer" app mobile-breakpoint="600">
+    <v-navigation-drawer
+      floating
+      v-model="drawer"
+      app
+      mobile-breakpoint="600"
+      src="../assets/night-4702174_1280.jpg"
+    >
       <v-list class="pt-0">
         <v-list-item to="/">
           <v-list-item-content>
-            <v-list-item-title>Favorites</v-list-item-title>
+            <v-list-item-title>Home/Favorites</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-group
@@ -57,7 +65,6 @@
       <v-container fluid>
         <v-col cols="12" class="ma-1">
           <router-view></router-view>
-
           <v-btn fixed dark fab bottom right color="primary" @click="openForm">
             <v-icon>mdi-plus</v-icon>
             <!--Modal Form-->
@@ -66,6 +73,10 @@
                 <v-card>
                   <v-card-title>
                     <span class="headline">Add New Query</span>
+                    <v-spacer></v-spacer>
+                    <v-btn icon @click="closeForm"
+                      ><v-icon>mdi-close</v-icon></v-btn
+                    >
                   </v-card-title>
                   <v-card-text class="pb-0">
                     <v-container class="pb-0">
@@ -80,6 +91,7 @@
                             autofocus
                             :rules="inputRules"
                             v-model="newQuery.fandom"
+                            @keydown.enter="saveQuery"
                           ></v-combobox>
                         </v-col>
                         <v-col cols="12" sm="6">
@@ -91,6 +103,7 @@
                             required
                             :rules="inputRules"
                             v-model="newQuery.category"
+                            @keydown.enter="saveQuery"
                           ></v-combobox>
                         </v-col>
                         <v-col cols="12" sm="6">
@@ -102,9 +115,14 @@
                             hint="enter a title for your query"
                             v-model="newQuery.title"
                             :rules="inputRules"
+                            @keydown.enter="saveQuery"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="6" class="d-flex">
+                        <v-col
+                          cols="12"
+                          sm="6"
+                          class="d-flex pt-3 pb-9 pa-md-3"
+                        >
                           <v-btn
                             @click="$refs.fileInput.click()"
                             outlined
@@ -119,17 +137,9 @@
                             style="display: none"
                             @change="uploadImage"
                             accept="image/*"
+                            @keydown.enter="saveQuery"
                           />
                         </v-col>
-                        <v-col cols="12">
-                          <v-text-field
-                            label="Query Description"
-                            filled
-                            dense
-                            v-model="newQuery.description"
-                          ></v-text-field>
-                        </v-col>
-
                         <v-col cols="12">
                           <v-text-field
                             label="Query Link*"
@@ -138,6 +148,15 @@
                             required
                             :rules="urlRules"
                             v-model="newQuery.link"
+                            @keydown.enter="saveQuery"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                          <v-text-field
+                            label="Query Description"
+                            filled
+                            dense
+                            v-model="newQuery.description"
                             @keydown.enter="saveQuery"
                           ></v-text-field>
                         </v-col>
@@ -161,10 +180,13 @@
 </template>
 
 <script>
+import * as firebase from 'firebase/app'
+import 'firebase/storage'
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
-      loggedIn: false,
       drawer: true,
       dialog: false,
       lazy: false,
@@ -187,13 +209,16 @@ export default {
       urlRules: [
         v => !!v || 'URL is required',
         v => (v && v.length > 0) || 'Please enter more than 0 characters',
-        v => /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)?/gi.test(
+        v =>
+          /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)?/gi.test(
             v
           ) || 'URL must be valid and contain http:// or https://',
       ],
     }
   },
   methods: {
+    ...mapActions(['logout']),
+
     makePath(value) {
       const regex = /\s/gi
       return value.toLowerCase().replace(regex, '-')
@@ -202,19 +227,35 @@ export default {
       this.dialog = true
     },
 
+    closeForm() {
+      this.dialog = false
+    },
+
     uploadImage() {
       this.newQuery.image = event.target.files[0]
       this.imageUploadText = event.target.files[0].name
+
+      //upload img get url
+      const storageRef = firebase
+        .storage()
+        .ref(`${this.newQuery.image.name}`)
+        .put(this.newQuery.image)
+      storageRef.on(`state_changed`, () => {
+        storageRef.snapshot.ref.getDownloadURL().then(url => {
+          this.newQuery.image = url
+        })
+      })
     },
 
     saveQuery() {
       this.valid = this.$refs.queryForm.validate()
+
       if (this.valid) {
-        this.dialog = false
         this.$store.dispatch('saveQuery', this.newQuery)
-        this.$refs.queryForm.resetValidation()
-        this.resetQuery()
+        this.dialog = false
       }
+      this.$refs.queryForm.resetValidation()
+      this.resetQuery()
     },
 
     resetQuery() {
@@ -228,10 +269,13 @@ export default {
         link: '',
         id: Math.round(Date.now() + Math.random()),
       }
+      this.imageUploadText = 'Upload Image'
     },
   },
 
   computed: {
+    ...mapGetters(['loggedIn']),
+
     categories() {
       return this.$store.getters.categories
     },
@@ -245,12 +289,17 @@ export default {
 </script>
 
 <style lang="scss">
-.template--default,
-.v-main {
-  //height: 100%;
-  //min-height: 100vh;
-}
+.v-toolbar__title {
+  .v-toolbar-logo {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    transition: color 0.2s ease;
 
+    &:hover {
+      color: white;
+    }
+  }
+}
 .v-btn--bottom {
   bottom: 0;
 }

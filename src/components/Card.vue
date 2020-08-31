@@ -56,6 +56,8 @@
       </v-expand-transition>
     </v-card>
 
+    <!--Delete Form -->
+
     <!--Modal Form-->
     <v-dialog v-model="dialog" max-width="600px" v-if="dialog" persistent>
       <v-form ref="editForm" :lazy-validation="lazy">
@@ -106,7 +108,7 @@
                     @keydown.enter="editQuery"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6" class="d-flex">
+                <v-col cols="12" sm="6" class="d-flex pt-3 pb-9 pa-md-3">
                   <v-btn
                     @click="$refs.fileInput.click()"
                     outlined
@@ -126,22 +128,21 @@
                 </v-col>
                 <v-col cols="12">
                   <v-text-field
-                    label="Query Description"
-                    filled
-                    dense
-                    v-model="cardQuery.description"
-                    @keydown.enter="editQuery"
-                  ></v-text-field>
-                </v-col>
-
-                <v-col cols="12">
-                  <v-text-field
                     label="Query Link*"
                     filled
                     dense
                     required
                     :rules="urlRules"
                     v-model="cardQuery.link"
+                    @keydown.enter="editQuery"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field
+                    label="Query Description"
+                    filled
+                    dense
+                    v-model="cardQuery.description"
                     @keydown.enter="editQuery"
                   ></v-text-field>
                 </v-col>
@@ -160,6 +161,8 @@
 </template>
 
 <script>
+import * as firebase from 'firebase/app'
+import 'firebase/storage'
 import { mapActions } from 'vuex'
 
 export default {
@@ -170,7 +173,7 @@ export default {
       cardQuery: { ...this.query },
       show: false,
       dialog: false,
-      lazy: true,
+      lazy: false,
       tempImage: null,
       valid: true,
       imageUploadText: this.query.image ? this.query.image : 'Upload Image',
@@ -192,7 +195,6 @@ export default {
     ...mapActions(['favQuery']),
 
     deleteQuery(value) {
-      alert('Are you sure?')
       this.$store.dispatch('deleteQuery', value)
     },
 
@@ -203,6 +205,17 @@ export default {
     updateImage() {
       this.tempImage = event.target.files[0]
       this.imageUploadText = event.target.files[0].name
+
+      //upload img get url
+      const storageRef = firebase
+        .storage()
+        .ref(`${this.tempImage.name}`)
+        .put(this.tempImage)
+      storageRef.on(`state_changed`, () => {
+        storageRef.snapshot.ref.getDownloadURL().then(url => {
+          this.tempImage = url
+        })
+      })
     },
 
     editQuery() {
