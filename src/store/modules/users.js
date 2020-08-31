@@ -37,7 +37,7 @@ const actions = {
     if (store.state.loggedIn) return
     const provider = new firebase.auth.GoogleAuthProvider()
     try {
-      await auth.signInWithPopup(provider)
+      await auth.signInWithRedirect(provider)
     } catch (error) {
       console.error(error)
     }
