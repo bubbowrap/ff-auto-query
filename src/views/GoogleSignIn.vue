@@ -49,5 +49,6 @@ export default {
 <style lang="scss" scoped>
 .transparent {
   border: thin solid rgba(255, 255, 255, 0.2) !important;
+  background: none !important;
 }
 </style>
