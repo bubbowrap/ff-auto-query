@@ -15,19 +15,19 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
-    meta: { requiresAuth: true },
+    meta: { layout: 'Default', requiresAuth: true },
   },
   {
     path: '/category/:category/:fandom',
     name: 'Category',
     component: Category,
     props: true,
-    meta: { requiresAuth: true },
+    meta: { layout: 'Default', requiresAuth: true },
   },
   {
     path: '/about',
     name: 'About',
-    meta: { requiresAuth: true },
+    meta: { layout: 'Default', requiresAuth: true },
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -38,7 +38,7 @@ const routes = [
     path: '/404',
     name: '404',
     component: NotFound,
-    meta: { requiresAuth: true },
+    meta: { layout: 'Default', requiresAuth: true },
   },
   {
     path: '/sign-in',
@@ -52,7 +52,7 @@ const routes = [
   {
     path: '*',
     redirect: '/404',
-    meta: { requiresAuth: true },
+    meta: { layout: 'Default', requiresAuth: true },
   },
 ]
 

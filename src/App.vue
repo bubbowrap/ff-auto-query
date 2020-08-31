@@ -17,7 +17,7 @@ export default {
   components: {},
   computed: {
     layout() {
-      return this.$route.meta.layout || 'Default'
+      return this.$route.meta.layout || 'signIn'
     },
   },
 }
