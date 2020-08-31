@@ -22,10 +22,10 @@ export default {
   },
 
   watch: {
-    async navCategories() {
+    ritersnavCategories() {
       for (let category in this.$store.getters.categories) {
         if (this.$store.getters.categories[category].length === 0) {
-          await this.$store.dispatch('deleteCategory', category)
+          this.$store.dispatch('deleteCategory', category)
         }
       }
     },

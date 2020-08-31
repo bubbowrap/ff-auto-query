@@ -45,8 +45,12 @@ export default {
   },
   methods: {
     makePath(value) {
-      const regex = /\s/gi
-      return value.toLowerCase().replace(regex, '-')
+      const regex = /[\s!?&-@:;]/gi
+      const dashRegex = /-+/g
+      return value
+        .toLowerCase()
+        .replace(regex, '-')
+        .replace(dashRegex, '-')
     },
   },
 }

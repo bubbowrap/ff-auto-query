@@ -34,7 +34,8 @@ export default {
 }
 .theme--dark.v-card,
 .theme--dark.v-app-bar.v-toolbar.v-sheet,
-.theme--dark.v-navigation-drawer {
+.theme--dark.v-navigation-drawer,
+.v-snack__wrapper.theme--dark {
   background: #232e3a !important;
 }
 .theme--dark.v-application {
