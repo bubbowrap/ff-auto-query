@@ -236,15 +236,25 @@ export default {
       this.imageUploadText = event.target.files[0].name
 
       //upload img get url
-      const storageRef = firebase
-        .storage()
-        .ref(`${this.tempImage.name}`)
+      const storageRef = firebase.storage().ref()
+      const uploadTask = storageRef
+        .child(`${this.tempImage.name}`)
         .put(this.tempImage)
-      storageRef.on(`state_changed`, () => {
-        storageRef.snapshot.ref.getDownloadURL().then(url => {
-          this.tempImage = url
-        })
-      })
+
+      uploadTask.on(
+        `state_changed`,
+        snapshot => {
+          console.log(snapshot.totalBytes)
+        },
+        e => {
+          console.error(e)
+        },
+        () => {
+          uploadTask.snapshot.ref.getDownloadURL().then(url => {
+            this.tempImage = url
+          })
+        }
+      )
     },
 
     editQuery() {

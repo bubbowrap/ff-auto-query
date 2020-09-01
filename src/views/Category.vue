@@ -53,5 +53,9 @@ export default {
         .replace(dashRegex, '-')
     },
   },
+  beforeMount() {
+    delete this.fandomTitle
+    delete this.categoryWord
+  }
 }
 </script>
