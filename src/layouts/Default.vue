@@ -126,7 +126,7 @@
                           @click="$refs.fileInput.click()"
                           outlined
                           x-large
-                          class="flex-grow-1"
+                          class="flex-grow-1 uploadBtn"
                           color="primary"
                           >{{ imageUploadText }}</v-btn
                         >
@@ -354,7 +354,21 @@ h1 {
     }
   }
 }
+
 .v-btn--bottom {
   bottom: 0;
+}
+
+.uploadBtn {
+  justify-content: start;
+  direction: rtl;
+  max-width: 100%;
+  
+  .v-btn__content {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
 }
 </style>

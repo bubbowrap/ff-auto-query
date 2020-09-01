@@ -114,7 +114,6 @@
                     x-large
                     class="flex-grow-1 uploadBtn"
                     color="primary"
-                    style="max-width: 100%"
                     >{{ imageUploadText }}</v-btn
                   >
                   <input
@@ -280,16 +279,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-.uploadBtn {
-  justify-content: start;
-  direction: rtl;
-  .v-btn__content {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
-}
-</style>
