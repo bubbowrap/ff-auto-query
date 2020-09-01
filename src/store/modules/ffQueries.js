@@ -76,6 +76,18 @@ const mutations = {
 
 const actions = {
   saveQuery: ({ dispatch, commit }, query) => {
+    query.fandom = query.fandom.indexOf(' ')
+      ? query.fandom
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ')
+      : query.fandom.charAt(0) + query.fandom.slice(1)
+    query.category = query.category.indexOf(' ')
+      ? query.category
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ')
+      : query.category.charAt(0) + query.category.slice(1)
     commit('SAVE_QUERY', query)
 
     const { category, fandom } = query
