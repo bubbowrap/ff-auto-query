@@ -64,7 +64,9 @@
     <v-main>
       <v-container fluid>
         <v-col cols="12" class="ma-1">
-          <router-view></router-view>
+          <keep-alive>
+            <router-view :key="$route.fullPath"></router-view>
+          </keep-alive>
           <v-btn fixed dark fab bottom right color="primary" @click="openForm">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
