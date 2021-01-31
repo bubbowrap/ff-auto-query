@@ -24,7 +24,6 @@
       v-model="drawer"
       app
       mobile-breakpoint="600"
-      src="../assets/night-4702174_1280.jpg"
     >
       <v-list class="pt-0">
         <v-list-item to="/">
@@ -352,6 +351,14 @@ h1 {
     &:hover {
       color: white;
     }
+  }
+}
+
+.v-list-item--active {
+      background-color: rgba(255,255,255,.05);
+
+  &:before {
+    background-color: rgba(255,255,255,.2);
   }
 }
 

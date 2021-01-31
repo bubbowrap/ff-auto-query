@@ -1,6 +1,6 @@
 <template>
   <v-col cols="12" md="6">
-    <v-card class="flex-grow-1">
+    <v-card class="flex-grow-1" outlined>
       <div class="d-flex flex-no-wrap justify-space-between">
         <div>
           <v-card-title v-text="cardQuery.title"></v-card-title>
