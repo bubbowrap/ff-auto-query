@@ -32,12 +32,12 @@ export default {
 .fade-leave-active {
   opacity: 0;
 }
-.theme--dark.v-card,
 .theme--dark.v-app-bar.v-toolbar.v-sheet,
 .theme--dark.v-navigation-drawer,
 .v-snack__wrapper.theme--dark {
-  background: #232e3a !important;
+  background: #161b22 !important;
 }
+.theme--dark.v-card,
 .theme--dark.v-application {
   background: #0f1419 !important;
 }
