@@ -11,9 +11,9 @@
       <v-col md="9" lg="8">
         <h1>Save Your Favorite Filters.</h1>
         <p>
-          Hey {{ firstName ? firstName : 'There' }}! Save and View all of your
+          Hey {{ firstName ? firstName : 'There' }}! Save and view all of your
           top visited AO3 queries in one central location and get some of your
-          precious time back. Click on the button in the corner to get started.
+          precious time back. Click the '+' button in the bottom right corner to get started.
         </p>
       </v-col>
     </template>
